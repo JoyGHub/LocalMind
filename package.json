@@ -65,7 +65,7 @@
     "ts-node": "^10.9.2",
     "typescript": "^7.0.2"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dependencies": {
     "dompurify": "^3.4.16",
     "highlight.js": "^11.11.1",
