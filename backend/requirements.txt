@@ -1,0 +1,7 @@
+fastapi
+Flask
+flask-cors
+httpx
+ollama
+piper-tts
+uvicorn

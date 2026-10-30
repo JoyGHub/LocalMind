@@ -1,0 +1,59 @@
+:host {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  pointer-events: none;
+}
+
+.temp-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 12px 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  opacity: 0;
+  transform: scale(0.9);
+  visibility: hidden;
+  transform-origin: bottom center;
+  transform: perspective(600px) rotateX(90deg);
+  transition:
+    opacity 0.3s ease-out,
+    transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1),
+    visibility 0.4s linear;
+  user-select: none;
+}
+
+.temp-card.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: perspective(600px) rotateX(0deg);
+}
+
+sl-icon {
+  font-size: 1.5rem;
+  color: #633cff;
+}
+
+.temp-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+strong {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333333;
+}
+
+p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #6b6b6b;
+}

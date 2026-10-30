@@ -1,0 +1,150 @@
+:host {
+  display: block;
+  height: 100vh;
+}
+
+.wrapper {
+  display: flex;
+  height: 100vh;
+}
+
+localmind-sidebar {
+  width: 350px;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 860px;
+}
+
+.content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.current-chat {
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.messages {
+  width: 100%;
+  box-sizing: border-box;
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-top: 50px;
+  margin-bottom: 170px;
+}
+
+.messages-content {
+  width: 800px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+pre[class*='language-'] {
+  margin: 0.5em 0;
+  padding: 1em;
+  overflow-x: auto;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.bottom-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+
+  /* Fades from transparent at the top to solid white. 
+     Adjust the percentage (e.g., 50%) to make the fade sharper or softer */
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 15%);
+
+  /* CRITICAL: Prevents the invisible part of the div from blocking clicks or scrolling */
+  pointer-events: none;
+}
+
+/* To clean up: */
+
+.ollama-inactive-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(10px);
+  background-color: #18181878;
+}
+
+.ollama-inactive-modal {
+  color: rgb(255, 255, 255);
+  background-color: #181818;
+  width: fit-content;
+  height: fit-content;
+  border-radius: 20px;
+  padding: 25px;
+}
+
+.progress-container {
+  margin-top: 20px;
+  width: 100%;
+}
+
+progress {
+  width: 100%;
+  height: 20px;
+}
+
+.progress-container p {
+  text-align: center;
+  margin-top: 5px;
+  font-weight: bold;
+}
+
+.model-management-modal-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.model-management-modal-header h1 {
+  margin: 0;
+}
+
+.model-management-modal-header svg {
+  cursor: pointer;
+}
+
+.download-model input {
+  color: white;
+  background-color: #1e1e1e;
+  font-size: 16px;
+  width: 220px;
+  padding: 0.75em;
+  border-radius: 20px;
+  border: none;
+}
+
+.download-model button {
+  margin-left: 20px;
+  color: #1e1e1e;
+  background-color: white;
+  font-size: 16px;
+  width: 100px;
+  padding: 0.75em;
+  border-radius: 20px;
+  border: none;
+}

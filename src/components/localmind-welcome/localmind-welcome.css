@@ -1,0 +1,25 @@
+.animated-text {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--sl-color-neutral-800);
+  user-select: none;
+}
+
+.letter {
+  display: inline-block;
+  opacity: 0;
+}
+
+.letter.visible {
+  animation: fadeIn 0.05s ease-in forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

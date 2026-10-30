@@ -1,0 +1,154 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
+}
+
+.modal-card {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 480px;
+  overflow: hidden;
+  border: 1px solid #eeeeF2;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+  color: #1a1a1a;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 24px 20px;
+}
+
+.title-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.app-icon {
+  display: flex;
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: #f5f3ff;
+  color: #633cff;
+  font-size: 23px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #1a1a1a;
+  font-size: 19px;
+  font-weight: 650;
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  color: #73737d;
+  font-size: 13px;
+}
+
+.modal-body {
+  padding: 0 24px 22px;
+}
+
+.description {
+  margin: 0 0 20px;
+  color: #555560;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.details {
+  overflow: hidden;
+  border: 1px solid #eeeeF2;
+  border-radius: 12px;
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 48px;
+  padding: 10px 14px;
+  box-sizing: border-box;
+}
+
+.detail-row + .detail-row {
+  border-top: 1px solid #eeeeF2;
+}
+
+.detail-label {
+  color: #73737d;
+  font-size: 13px;
+}
+
+.detail-value {
+  color: #262630;
+  font-size: 13px;
+  font-weight: 550;
+  text-align: right;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #5533d8;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.link sl-icon {
+  font-size: 11px;
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid #eeeeF2;
+  background: #fafafa;
+}
+
+.modal-footer span {
+  color: #85858d;
+  font-size: 11px;
+}
+
+@media (max-width: 420px) {
+  .modal-header {
+    padding: 20px 18px 16px;
+  }
+
+  .modal-body {
+    padding: 0 18px 18px;
+  }
+
+  .modal-footer {
+    padding: 14px 18px;
+  }
+
+  .detail-row {
+    align-items: flex-start;
+  }
+}

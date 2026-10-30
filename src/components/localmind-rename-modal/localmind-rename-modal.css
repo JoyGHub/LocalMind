@@ -1,0 +1,48 @@
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-card {
+  background: #ffffff;
+  border-radius: var(--sl-border-radius-medium, 8px);
+  box-shadow: var(--sl-shadow-large, 0 10px 25px rgba(0, 0, 0, 0.15));
+  width: 100%;
+  max-width: 450px;
+  padding: var(--sl-spacing-large, 20px);
+  box-sizing: border-box;
+  user-select: none;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--sl-spacing-medium);
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: var(--sl-font-size-large);
+  color: var(--sl-color-neutral-800);
+}
+
+.modal-body {
+  margin-bottom: var(--sl-spacing-large);
+  color: var(--sl-color-neutral-700);
+  line-height: 1.5;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sl-spacing-small);
+}

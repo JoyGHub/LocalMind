@@ -1,0 +1,260 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: absolute;
+  left: 50%;
+  width: 860px;
+  bottom: 50%;
+  transform: translate(-50%, 50%);
+  transition:
+    bottom 0.3s ease-in-out,
+    transform 0.3s ease-in-out;
+}
+
+.wrapper.at-bottom {
+  bottom: 0px;
+  transform: translateX(-50%);
+  height: auto;
+  padding-bottom: 20px;
+  padding-top: 10px;
+}
+
+.input-wrapper {
+  font-size: 25px;
+  border-radius: 30px;
+  background: #ffffff;
+  -webkit-box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  border: 1px solid #dcbeff;
+}
+
+.input-header {
+  width: 100%;
+  min-height: 70px;
+  max-height: 300px;
+  padding: 22px 25px;
+  border: none;
+  font-size: 18px;
+  box-sizing: border-box;
+  background: transparent;
+  font-family: inherit;
+  line-height: 1.5;
+  resize: none;
+  overflow-y: auto;
+  display: block;
+}
+
+.input-header:focus {
+  outline: none;
+}
+
+.input-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  padding: 0px 25px;
+  background: transparent;
+}
+
+.input-footer-left {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.input-footer-right {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
+
+.input-select {
+  width: fit-content;
+  min-width: 200px;
+}
+
+:host sl-select::part(combobox) {
+  border: none;
+}
+
+.input-select::part(form-control-label) {
+  display: none;
+}
+
+.search-toggle-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.search-toggle-wrapper.active {
+  background-color: #8c61ff;
+}
+
+.search-toggle-wrapper.active sl-icon-button::part(base) {
+  color: white;
+}
+
+.search-toggle-wrapper sl-icon-button::part(base) {
+  background: none;
+}
+
+.search-toggle-wrapper sl-icon-button {
+  background: none;
+  font-size: 1.2rem;
+}
+
+.thinking-level-dropdown {
+  display: inline-flex;
+}
+
+.thinking-level-trigger {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 11px;
+  border: 1px solid #e4d8ff;
+  border-radius: 20px;
+  background-color: #fbf9ff;
+  color: #6f4bc3;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.thinking-level-trigger:hover,
+.thinking-level-trigger:focus-visible {
+  border-color: #b99af5;
+  background-color: #f6f0ff;
+  outline: none;
+}
+
+.thinking-level-trigger > sl-icon {
+  flex: 0 0 auto;
+  font-size: 17px;
+}
+
+.thinking-level-trigger span {
+  color: #493579;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.thinking-level-chevron {
+  font-size: 11px !important;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.thinking-level-dropdown sl-menu {
+  min-width: 132px;
+}
+
+.models-dropdown::part(listbox) {
+  max-height: 250px;
+}
+
+.dropdown-option {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.dropdown-option-size {
+  color: rgb(189, 189, 189);
+  font-size: 12px;
+}
+
+.select__value-input {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+/* =========================================
+   Models Dropdown Custom Trigger
+   ========================================= */
+
+.models-dropdown::part(display-input) {
+  display: none;
+}
+
+.models-dropdown::part(prefix) {
+  flex: 1;
+  display: flex;
+}
+
+.selected-value-display {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-width: 220px;
+}
+
+.selected-name {
+  flex-grow: 1;
+  color: #333;
+}
+
+.selected-divider {
+  color: #d1d1d1;
+  margin: 0 10px;
+}
+
+.selected-size {
+  color: rgb(189, 189, 189);
+  font-size: 12px;
+}
+
+/* =========================================
+   Send Button Styling
+   ========================================= */
+
+.send-button::part(base) {
+  background-color: #8c61ff;
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+  font-size: 1.2rem;
+}
+
+.send-button::part(base):hover {
+  background-color: #764ce6;
+}
+
+.send-button::part(base):active {
+  transform: scale(0.95);
+}
+
+.send-button[disabled]::part(base) {
+  background-color: #e5e5e5;
+  color: #a0a0a0;
+  cursor: not-allowed;
+}

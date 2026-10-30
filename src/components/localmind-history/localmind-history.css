@@ -1,0 +1,135 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
+.history {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.section-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #a0a0a0;
+  margin-bottom: 8px;
+  padding: 0 4px;
+}
+
+.conversation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  min-height: 0;
+  padding-right: 4px;
+  scrollbar-width: none;
+}
+
+.conversation-list:hover {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d1d1 transparent;
+}
+
+.conversation-list::-webkit-scrollbar {
+  width: 4px;
+}
+.conversation-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.conversation-list::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 10px;
+}
+.conversation-list:hover::-webkit-scrollbar-thumb {
+  background-color: #d1d1d1;
+}
+
+.conversation {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-radius: 16px;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.conversation:hover {
+  background-color: #f7f7f7;
+}
+
+.conversation.active {
+  background-color: #f4f0ff;
+}
+
+.chat-main {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.chat-icon {
+  font-size: 1rem;
+  color: #6b6b6b;
+  flex-shrink: 0;
+}
+
+.conversation.active .chat-icon {
+  color: #1a1a1a;
+}
+
+.chat-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  gap: 2px;
+}
+
+.chat-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #4a4a4a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.conversation.active .chat-title {
+  color: #1a1a1a;
+}
+
+.chat-time {
+  font-size: 0.8rem;
+  color: #9a9a9a;
+}
+
+.options-dropdown {
+  flex-shrink: 0;
+  width: 32px;
+  display: flex;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.conversation:hover .options-dropdown,
+.options-dropdown:focus-within {
+  opacity: 1;
+  pointer-events: auto;
+}

@@ -1,0 +1,323 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css');
+/* @import url('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css'); */
+
+/* ==========================================================================
+   Message
+   ========================================================================== */
+
+.message {
+  width: fit-content;
+  max-width: 860px;
+  margin-bottom: 15px;
+
+  font-family: 'Inter', serif;
+  font-style: normal;
+  font-weight: 500;
+}
+
+.user-message {
+  margin-left: auto;
+  padding: 15px;
+  border-radius: 15px 15px 0 15px;
+
+  background-color: #f0f4fa;
+  color: #414141;
+}
+
+.assistant-message {
+  margin-right: auto;
+  padding: 20px;
+  border-radius: 15px 15px 15px 0;
+
+  color: #414141;
+  line-height: 2;
+  white-space: normal;
+}
+
+.assistant-response-token {
+  animation: response-content-enter 320ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes response-content-enter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assistant-response-token {
+    animation: none;
+  }
+}
+
+.user-message p {
+  margin: 3px;
+}
+
+.message a {
+  color: #8c61ff;
+  text-decoration: none;
+}
+
+/* ==========================================================================
+   Code Blocks
+   ========================================================================== */
+
+.code-block-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 0;
+  max-width: 100%;
+}
+
+.code-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 8px 16px;
+  border-radius: 1em 1em 0 0;
+
+  font-weight: 700;
+
+  background: #f0f4fa7a;
+}
+
+.code-block {
+  margin: 0;
+  padding: 8px 16px;
+  overflow-x: auto;
+  background: #f0f4fa7a;
+}
+
+.code-block code {
+  background-color: transparent;
+}
+
+/* ==========================================================================
+   Thinking Block
+   ========================================================================== */
+
+.thinking-block {
+  margin-bottom: 5px;
+}
+
+.thinking-block::part(base) {
+  background-color: #f9f9fc;
+  border: none;
+  border-left: 3px solid #8c61ff;
+  border-radius: 0 8px 8px 0;
+}
+
+.thinking-block::part(header) {
+  padding: 12px 16px;
+}
+
+.thinking-block::part(summary) {
+  color: #414141;
+  font-size: 0.85em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.thinking-block::part(content) {
+  padding: 0 16px 12px 16px;
+  color: #6b6b6b;
+  font-size: 0.95em;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  font-style: italic;
+}
+
+/* ==========================================================================
+   File Attachment Card
+   ========================================================================== */
+
+.file-attachment-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+
+  margin-top: 12px;
+  padding: 12px 16px;
+  background: #f0f4fa7a;
+  border: 1px solid #f0f4fa;
+  border-radius: 12px;
+  width: fit-content;
+  max-width: 800px;
+  user-select: none;
+}
+
+.file-icon {
+  font-size: 1.8em;
+  line-height: 1;
+}
+
+.file-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-grow: 1;
+}
+
+.file-name {
+  color: #414141;
+  font-size: 0.95em;
+  font-weight: 700;
+  word-break: break-all;
+}
+
+.file-size {
+  color: #6b6b6b;
+  font-size: 0.8em;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.download-btn {
+  display: inline-block;
+  padding: 6px 14px;
+  background-color: #8c61ff;
+  color: #ffffff !important;
+  border-radius: 8px;
+
+  font-size: 0.85em;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.download-btn:hover {
+  background-color: #764ce6;
+}
+
+.download-btn:active {
+  transform: scale(0.97);
+}
+
+/* ==========================================================================
+   Attached files 
+   ========================================================================== */
+
+.attached-files-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 16px;
+}
+
+.file-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background-color: var(--sl-color-neutral-50);
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+  -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+}
+
+.file-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.file-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.file-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--sl-color-neutral-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-size {
+  font-size: 12px;
+  color: var(--sl-color-neutral-500);
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   Table
+   ========================================================================== */
+
+table {
+  width: 100%;
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+thead {
+  background-color: #fafafa;
+}
+
+th {
+  padding: 16px 24px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+  text-align: left;
+}
+
+thead th:first-child {
+  border-top-left-radius: 11px;
+}
+
+thead th:last-child {
+  border-top-right-radius: 11px;
+}
+
+tbody tr {
+  transition: background-color 0.2s ease;
+  background: white;
+}
+
+tbody tr:hover td {
+  background-color: #fafafa;
+}
+
+td {
+  padding: 16px 24px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+  color: #1a1a1a;
+  line-height: 1.5;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}

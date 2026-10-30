@@ -1,0 +1,22 @@
+.actions {
+  padding-top: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease-in-out;
+}
+
+.actions.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.usedModel {
+  font-size: 13px;
+  color: #a9a9a9;
+  user-select: none;
+  padding-left: 10px;
+}

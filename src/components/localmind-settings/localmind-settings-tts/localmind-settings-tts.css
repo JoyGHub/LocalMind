@@ -1,0 +1,288 @@
+:host {
+  display: block;
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: fade-in 0.2s ease-out;
+}
+
+.settings-header {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: -8px;
+}
+
+.settings-description {
+  font-size: 12px;
+  color: #666666;
+  margin-top: -10px;
+}
+
+.setting-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px 24px;
+  background: white;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+}
+
+.setting-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.setting-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.setting-description {
+  font-size: 12px;
+  color: #666666;
+}
+
+.setting-control {
+  width: 100%;
+  min-width: 0;
+}
+
+.voice-dropdown {
+  width: 100%;
+}
+
+.dropdown-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 24px;
+}
+
+.dropdown-option-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dropdown-option-size {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.default-star {
+  color: #f59e0b;
+  font-size: 0.9rem;
+}
+
+.voice-tabs {
+  display: flex;
+  border-bottom: 1px solid #e5e7eb;
+  gap: 4px;
+}
+
+.voice-tab {
+  appearance: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: #6b7280;
+  padding: 10px 18px;
+  margin-bottom: -1px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.voice-tab:hover {
+  color: #4f46e5;
+}
+
+.voice-tab--active {
+  color: #4f46e5;
+  border-bottom-color: #4f46e5;
+}
+
+.voice-list-card {
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  background: white;
+  overflow: hidden;
+}
+
+.voice-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.voice-list-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.voice-list-description {
+  font-size: 12px;
+  color: #666666;
+  margin-top: 4px;
+}
+
+.voice-table {
+  width: 100%;
+}
+
+.voice-table-header,
+.voice-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(180px, 1fr) minmax(180px, auto);
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+}
+
+.voice-table-header {
+  background: #fafafa;
+  color: #6b7280;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.voice-row {
+  min-height: 64px;
+  border-top: 1px solid #f0f0f0;
+  transition: background 0.15s ease;
+}
+
+.voice-row:hover {
+  background: #fafafa;
+}
+
+.voice-name-cell {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.voice-name-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.voice-name {
+  color: #1a1a1a;
+  font-size: 13px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.voice-meta {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.voice-status {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.voice-built-in-note {
+  color: #6b7280;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.voice-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.voice-badge--built-in {
+  color: #5b21b6;
+  background: #ede9fe;
+}
+
+.voice-badge--default {
+  color: #047857;
+  background: #d1fae5;
+}
+
+.voice-row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.voice-row:hover .voice-row-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.delete-button::part(base) {
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.delete-button:hover::part(base) {
+  background: #fef2f2;
+}
+
+.actions-column {
+  text-align: right;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 900px) {
+  .voice-table-header,
+  .voice-row {
+    grid-template-columns: minmax(0, 1.4fr) minmax(150px, 1fr) auto;
+  }
+
+  .voice-built-in-note {
+    display: none;
+  }
+}
