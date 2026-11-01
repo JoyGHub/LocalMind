@@ -1,6 +1,6 @@
 # LocalMind
 
-LocalMind is a local web application built with StencilJS that allows users to interact offline with large language models (LLMs) via a simple and intuitive UI. Users can install and manage LLMs directly from the application using [Ollama](https://ollama.com/), a tool for running local language models.
+LocalMind is a local web application built with StencilJS that allows users to interact offline with large language models (LLMs) via a simple and intuitive UI. Users can install and manage LLMs directly from the application via [Ollama](https://ollama.com/).
 
 ## Features
 
@@ -20,7 +20,7 @@ You'll need Node.js (which includes npm), Python 3.10+, and [Ollama](https://oll
 Clone the repository, install the project dependencies, and start the app:
 
 ```sh
-git clone -b main https://github.com/JoyGHub/LocalMind.git
+git clone -b master https://github.com/JoyGHub/LocalMind.git
 cd LocalMind
 npm install
 python -m pip install -r backend/requirements.txt
