@@ -2,6 +2,8 @@
 
 LocalMind is a local web application built with StencilJS that allows users to interact offline with large language models (LLMs) via a simple and intuitive UI. Users can install and manage LLMs directly from the application via [Ollama](https://ollama.com/).
 
+![LocalMind UI](https://i.imgur.com/ZjSQtjU.png)
+
 ## Features
 
 - Simple and responsive UI to interact with local LLMs.
