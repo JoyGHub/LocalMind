@@ -34,10 +34,10 @@
   ],
   "scripts": {
     "build": "stencil build",
-    "start": "stencil build --dev --watch --serve",
+    "start": "concurrently -k -n \"UI,LLM,TTS\" -c \"green,blue,magenta\" \"npm run start:ui\" \"npm run start:llm\" \"npm run start:tts\"",
+    "start:ui": "stencil build --dev --watch --serve",
     "start:llm": "cd backend && python llm_api.py",
     "start:tts": "cd backend && python -m uvicorn tts_api:app --reload --port 8000",
-    "dev": "concurrently -k -n \"LLM,TTS,UI\" -c \"blue,magenta,green\" \"npm run start:llm\" \"npm run start:tts\" \"npm start\"",
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll",
     "generate": "stencil generate"
