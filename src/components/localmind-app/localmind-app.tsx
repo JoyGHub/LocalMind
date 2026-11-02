@@ -28,6 +28,7 @@ export class LocalMindApp {
   @State() useWebSearch: boolean = false;
   @State() isAppReady: boolean = false;
   @State() showSplash: boolean = true;
+  @State() sidebarCollapsed: boolean = false;
 
   requestId = 0;
   ollamaRunning!: boolean;
@@ -176,8 +177,13 @@ export class LocalMindApp {
     this.applyDefaultModel();
   }
 
-  @Listen('tempChatEvent')
-  handleTempChatEvent() {
+  @Listen('sidebarToggleEvent')
+  handleSidebarToggleEvent() {
+    this.sidebarCollapsed = !this.sidebarCollapsed;
+  }
+
+  startTemporaryChat() {
+    storeService.startTempChat();
     this.cancelActiveRequest();
     this.applyDefaultModel();
   }
@@ -353,8 +359,14 @@ export class LocalMindApp {
       <div class="wrapper">
         {this.showSplash && <localmind-splash isReady={this.isAppReady}></localmind-splash>}
         <localmind-attachment-overlay></localmind-attachment-overlay>
-        <localmind-sidebar models={this.models} ollamaRunning={this.ollamaRunning}></localmind-sidebar>
+        <localmind-sidebar class={{ collapsed: this.sidebarCollapsed }} collapsed={this.sidebarCollapsed} models={this.models} ollamaRunning={this.ollamaRunning}></localmind-sidebar>
         <main class="content" onWheel={event => this.handleMainWheel(event)}>
+          <div class="chat-toolbar">
+            <sl-button class={{ 'temp-chat-button': true, active: state.isTemporaryChat }} onClick={() => this.startTemporaryChat()} aria-label="Start temporary chat">
+              <sl-icon name="chat-dots" slot="prefix"></sl-icon>
+              Temporary chat
+            </sl-button>
+          </div>
           <localmind-temp-conv-card isActive={state.isTemporaryChat}></localmind-temp-conv-card>
           <div class="current-chat">
             <div class="messages">

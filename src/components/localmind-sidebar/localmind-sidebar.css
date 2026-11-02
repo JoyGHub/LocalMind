@@ -10,12 +10,35 @@
   border-right: 1px solid #f0f0f0;
   background: #ffffff;
   box-sizing: border-box;
-  transition: width 0.25s ease;
+  overflow: hidden;
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease;
   user-select: none;
 }
 
-.sidebar.collapsed {
-  width: 72px;
+.sidebar-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 0 0 56px;
+  padding: 8px 16px 0;
+  box-sizing: border-box;
+}
+
+.sidebar-header sl-icon-button::part(base) {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  color: #626262;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.sidebar-header sl-icon-button::part(base):hover {
+  background: #f2f0f8;
+  color: #333333;
 }
 
 .top {
@@ -23,7 +46,7 @@
   flex-direction: column;
   flex: 1;
   min-height: 0;
-  padding: 24px 20px 12px 20px;
+  padding: 12px 20px;
   gap: 12px;
   overflow: hidden;
 }
@@ -81,16 +104,11 @@ sl-button.nav-button sl-icon {
 
 .new-chat-row {
   display: flex;
-  gap: 10px;
-  align-items: center;
+  width: 100%;
 }
 
 sl-button.new-chat-button {
-  flex: 1;
-}
-
-sl-button.temp-chat-button {
-  flex-shrink: 0;
+  width: 100%;
 }
 
 sl-button.new-chat-button::part(base) {
@@ -102,20 +120,57 @@ sl-button.new-chat-button::part(base) {
   border: none;
 }
 
-sl-button.temp-chat-button::part(base) {
-  width: 48px;
-  height: 48px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #ffffff;
-  color: #4a4a4a;
-  border: 1px solid #e5e5e5;
+.button-label {
+  white-space: nowrap;
 }
 
-sl-button.temp-chat-button sl-icon {
-  font-size: 1.3rem;
+.sidebar.collapsed .sidebar-header {
+  justify-content: center;
+  padding: 8px 0 0;
+}
+
+.sidebar.collapsed .top {
+  padding: 12px;
+  align-items: center;
+}
+
+.sidebar.collapsed .new-chat-row,
+.sidebar.collapsed sl-button.new-chat-button,
+.sidebar.collapsed sl-button.models-button,
+.sidebar.collapsed sl-button.nav-button {
+  width: 48px;
+}
+
+.sidebar.collapsed sl-button::part(base) {
+  width: 48px;
+  min-width: 48px;
+  box-sizing: border-box;
+  padding-inline: 0;
+  position: relative;
+  justify-content: center;
+}
+
+.sidebar.collapsed sl-button::part(prefix) {
+  position: absolute;
+  inset: 0;
+  justify-content: center;
   margin: 0;
-  display: block;
+}
+
+.sidebar.collapsed .button-label {
+  display: none;
+}
+
+.sidebar.collapsed localmind-history,
+.sidebar.collapsed localmind-ollama-status {
+  display: none;
+}
+
+.sidebar.collapsed .bottom {
+  padding: 12px;
+  align-items: center;
+}
+
+.sidebar.collapsed sl-button.nav-button::part(base) {
+  justify-content: center;
 }

@@ -16,11 +16,11 @@
 
 ## Events
 
-| Event             | Description | Type                |
-| ----------------- | ----------- | ------------------- |
-| `modelsCardEvent` |             | `CustomEvent<void>` |
-| `newChatEvent`    |             | `CustomEvent<void>` |
-| `tempChatEvent`   |             | `CustomEvent<void>` |
+| Event                | Description | Type                |
+| -------------------- | ----------- | ------------------- |
+| `modelsCardEvent`    |             | `CustomEvent<void>` |
+| `newChatEvent`       |             | `CustomEvent<void>` |
+| `sidebarToggleEvent` |             | `CustomEvent<void>` |
 
 
 ## Dependencies

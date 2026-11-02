@@ -418,7 +418,7 @@ declare global {
     interface HTMLLocalmindSidebarElementEventMap {
         "modelsCardEvent": void;
         "newChatEvent": void;
-        "tempChatEvent": void;
+        "sidebarToggleEvent": void;
     }
     interface HTMLLocalmindSidebarElement extends Components.LocalmindSidebar, HTMLStencilElement {
         addEventListener<K extends keyof HTMLLocalmindSidebarElementEventMap>(type: K, listener: (this: HTMLLocalmindSidebarElement, ev: LocalmindSidebarCustomEvent<HTMLLocalmindSidebarElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -593,7 +593,7 @@ declare namespace LocalJSX {
         "ollamaRunning": boolean;
         "onModelsCardEvent"?: (event: LocalmindSidebarCustomEvent<void>) => void;
         "onNewChatEvent"?: (event: LocalmindSidebarCustomEvent<void>) => void;
-        "onTempChatEvent"?: (event: LocalmindSidebarCustomEvent<void>) => void;
+        "onSidebarToggleEvent"?: (event: LocalmindSidebarCustomEvent<void>) => void;
     }
     interface LocalmindSplash {
         "isReady"?: boolean;

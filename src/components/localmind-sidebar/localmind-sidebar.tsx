@@ -17,7 +17,7 @@ export class LocalMindSidebar {
 
   @Event({ bubbles: true, composed: true }) modelsCardEvent!: EventEmitter<void>;
   @Event({ bubbles: true, composed: true }) newChatEvent!: EventEmitter<void>;
-  @Event({ bubbles: true, composed: true }) tempChatEvent!: EventEmitter<void>;
+  @Event({ bubbles: true, composed: true }) sidebarToggleEvent!: EventEmitter<void>;
 
   sendModelsCardEvent() {
     this.modelsCardEvent.emit();
@@ -26,11 +26,6 @@ export class LocalMindSidebar {
   startNewChat() {
     storeService.startNewChat();
     this.newChatEvent.emit();
-  }
-
-  startTempChat() {
-    storeService.startTempChat();
-    this.tempChatEvent.emit();
   }
 
   openSettings() {
@@ -48,37 +43,41 @@ export class LocalMindSidebar {
   render() {
     return (
       <aside class={{ sidebar: true, collapsed: this.collapsed }}>
+        <div class="sidebar-header">
+          <sl-tooltip content={this.collapsed ? 'Expand sidebar' : 'Collapse sidebar'} placement="right">
+            <sl-icon-button
+              name={this.collapsed ? 'chevron-bar-right' : 'chevron-bar-left'}
+              label={this.collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              onClick={() => this.sidebarToggleEvent.emit()}
+            ></sl-icon-button>
+          </sl-tooltip>
+        </div>
+
         <div class="top">
           <div class="new-chat-row">
-            <sl-button class="new-chat-button" onClick={() => this.startNewChat()}>
+            <sl-button class="new-chat-button" onClick={() => this.startNewChat()} aria-label="New chat">
               <sl-icon name="stars" slot="prefix"></sl-icon>
-              New Chat
+              <span class="button-label">New Chat</span>
             </sl-button>
-
-            <sl-tooltip content="New Temporary Chat" placement="bottom">
-              <sl-button class="temp-chat-button" onClick={() => this.startTempChat()}>
-                <sl-icon name="chat-dots"></sl-icon>
-              </sl-button>
-            </sl-tooltip>
           </div>
 
-          <sl-button class="models-button" onClick={() => this.sendModelsCardEvent()}>
+          <sl-button class="models-button" onClick={() => this.sendModelsCardEvent()} aria-label="Models Manager">
             <sl-icon name="box" slot="prefix"></sl-icon>
-            Models Manager
+            <span class="button-label">Models Manager</span>
           </sl-button>
 
           <localmind-history></localmind-history>
         </div>
 
         <div class="bottom">
-          <sl-button variant="text" class="nav-button" onClick={() => this.openSettings()}>
+          <sl-button variant="text" class="nav-button" onClick={() => this.openSettings()} aria-label="Settings">
             <sl-icon name="gear" slot="prefix"></sl-icon>
-            Settings
+            <span class="button-label">Settings</span>
           </sl-button>
 
-          <sl-button variant="text" class="nav-button" onClick={() => this.openAbout()}>
+          <sl-button variant="text" class="nav-button" onClick={() => this.openAbout()} aria-label="About">
             <sl-icon name="info-circle" slot="prefix"></sl-icon>
-            About
+            <span class="button-label">About</span>
           </sl-button>
 
           <localmind-ollama-status ollamaRunning={this.ollamaRunning}></localmind-ollama-status>
