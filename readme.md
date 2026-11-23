@@ -15,19 +15,21 @@ LocalMind is a local web application built with StencilJS that allows users to i
 
 ### Prerequisites
 
-You'll need Node.js (which includes npm), Python 3.10+, and [Ollama](https://ollama.com/) installed. Keep Ollama running while using LocalMind.
+You'll need Node.js (which includes npm), 64-bit Python 3.10 to 3.14, and [Ollama](https://ollama.com/) installed. Python 3.15 is not currently supported because Piper's `onnxruntime` dependency does not provide a compatible package. Keep Ollama running while using LocalMind.
 
 ### Installation Steps
-
-Clone the repository, install the project dependencies, and start the app:
 
 ```sh
 git clone -b master https://github.com/JoyGHub/LocalMind.git
 cd LocalMind
-npm install
+py -3.14 -m venv .venv
+source .venv/Scripts/activate
 python -m pip install -r backend/requirements.txt
-npm run dev
+npm install
+npm run start
 ```
+
+Keep the virtual environment activated in that terminal while running the app. `py -3.14 -m pip install ...` alone installs packages for Python 3.14, but does not change which version the `python` command (used by the backend start scripts) runs.
 
 The UI and both backends start together. Open the URL printed by Stencil in the terminal.
 
