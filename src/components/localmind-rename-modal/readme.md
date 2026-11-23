@@ -54,11 +54,13 @@ Type: `Promise<void>`
 ### Used by
 
  - [localmind-history](../localmind-history)
+ - [localmind-project-view](../localmind-project-view)
 
 ### Graph
 ```mermaid
 graph TD;
   localmind-history --> localmind-rename-modal
+  localmind-project-view --> localmind-rename-modal
   style localmind-rename-modal fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

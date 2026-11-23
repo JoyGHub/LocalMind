@@ -4,16 +4,50 @@ import ollama
 import json
 import os
 import subprocess
+from urllib.parse import urlsplit
 
 if __package__:
+  from .code_execution import normalize_code_execution_request, stream_code_execution
   from .geo_tools import DEFAULT_SEARCH_RADIUS_METERS, search_nearby_places, search_place_by_query, stream_tool_result
 else:
+  from code_execution import normalize_code_execution_request, stream_code_execution
   from geo_tools import DEFAULT_SEARCH_RADIUS_METERS, search_nearby_places, search_place_by_query, stream_tool_result
 
 # TODO: Decide between Fask and FastAPI, or maybe another one.
 
 app = Flask(__name__)
 CORS(app)
+
+@app.route("/api/tools/execute_code", methods=["POST"])
+def execute_code_route():
+  data = request.get_json(silent=True)
+  if not isinstance(data, dict):
+    return jsonify({"error": "A JSON request body is required"}), 400
+
+  origin = request.headers.get("Origin")
+  if origin:
+    try:
+      origin_host = urlsplit(origin).hostname
+    except ValueError:
+      origin_host = None
+    if origin_host not in {"localhost", "127.0.0.1", "::1"}:
+      return jsonify({"error": "Code execution is available only to the local application."}), 403
+
+  try:
+    language, code, timeout = normalize_code_execution_request(
+      data.get("language"), data.get("code"), data.get("timeout_seconds")
+    )
+  except ValueError as error:
+    return jsonify({"error": str(error)}), 400
+  except Exception as error:
+    app.logger.exception("Code execution request failed")
+    return jsonify({"error": f"Code execution failed: {error}"}), 500
+
+  return Response(
+    (f"data: {json.dumps(event)}\n\n" for event in stream_code_execution(language, code, timeout)),
+    mimetype="text/event-stream",
+    headers={"Cache-Control": "no-cache, no-transform"},
+  )
 
 @app.route("/api/chat", methods=["POST"])
 def chat():

@@ -13,6 +13,7 @@ export class LocalMindMessage {
   @Prop() message!: Message;
   @Prop() isWritingAnswer!: boolean;
   @State() isHovered = false;
+  @State() isExecutionOutputOpen = true;
   @Prop() isLastMessage!: boolean;
   previousResponseText: string | null = null;
 
@@ -64,7 +65,26 @@ export class LocalMindMessage {
     }
   }
 
+  getCodeExecutionResult(): {
+    language: string;
+    stdout: string;
+    stderr: string;
+    exit_code: number | null;
+    success: boolean;
+    error: string | null;
+    duration_ms: number;
+    running?: boolean;
+  } | null {
+    if (this.message.role !== 'tool' || this.message.name !== 'execute_code') return null;
+    try {
+      return JSON.parse(this.message.content);
+    } catch {
+      return null;
+    }
+  }
+
   render() {
+    const executionResult = this.getCodeExecutionResult();
     return (
       <div
         class={{
@@ -84,8 +104,14 @@ export class LocalMindMessage {
         )}
 
         {/* Tool Execution Indicator */}
-        {!this.message.content && this.message.tool_calls && this.message.tool_calls.length > 0 && !this.message.thinking && (
-          <div class="tool-indicator">Using tool: {this.message.tool_calls[0].function.name}...</div>
+        {this.message.tool_calls?.map((call, index) =>
+          call.function.name === 'execute_code' ? (
+            <sl-details class="code-execution" summary={`Run ${String(call.function.arguments.language || 'code')}`}>
+              <pre><code>{String(call.function.arguments.code || '')}</code></pre>
+            </sl-details>
+          ) : !this.message.content && !this.message.thinking && index === 0 ? (
+            <div class="tool-indicator">Using tool: {call.function.name}...</div>
+          ) : null,
         )}
 
         {/* Main Content */}
@@ -93,6 +119,34 @@ export class LocalMindMessage {
           this.message.content.trim() !== '' && <p>{this.message.content}</p>
         ) : (
           this.message.content && <div class="assistant-response-content" innerHTML={MarkdownService.render(this.message.content)}></div>
+        )}
+
+        {executionResult && (
+          <sl-details
+            open={this.isExecutionOutputOpen}
+            onSlShow={() => (this.isExecutionOutputOpen = true)}
+            onSlHide={() => (this.isExecutionOutputOpen = false)}
+            class={{
+              'code-execution': true,
+              'code-execution-failed': !executionResult.success && !executionResult.running,
+            }}
+            summary={
+              executionResult.running
+                ? `${executionResult.language} running`
+                : `${executionResult.language} ${executionResult.success ? 'completed' : 'failed'} · ${executionResult.duration_ms} ms`
+            }
+          >
+            {executionResult.stdout && <section><strong>stdout</strong><pre>{executionResult.stdout}</pre></section>}
+            {executionResult.stderr && <section><strong>stderr</strong><pre>{executionResult.stderr}</pre></section>}
+            {executionResult.error && <p class="execution-error">{executionResult.error}</p>}
+            <p class="execution-status">
+              {executionResult.running
+                ? executionResult.stdout || executionResult.stderr
+                  ? 'Execution in progress...'
+                  : 'Waiting for output...'
+                : `Exit code: ${executionResult.exit_code === null ? 'timed out' : executionResult.exit_code}`}
+            </p>
+          </sl-details>
         )}
 
         {this.message.role === 'assistant' && (

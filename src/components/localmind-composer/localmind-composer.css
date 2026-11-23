@@ -20,6 +20,18 @@
   padding-top: 10px;
 }
 
+.wrapper.inline,
+.wrapper.inline.at-bottom {
+  position: relative;
+  left: auto;
+  bottom: auto;
+  width: min(860px, 100%);
+  height: auto;
+  margin: 20px auto;
+  padding: 0;
+  transform: none;
+}
+
 .input-wrapper {
   font-size: 25px;
   border-radius: 30px;

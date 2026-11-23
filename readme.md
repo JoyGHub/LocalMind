@@ -10,6 +10,7 @@ LocalMind is a local web application built with StencilJS that allows users to i
 - Easy installation of models via the app interface.
 - Built with StencilJS for fast and lightweight performance.
 - Select Off, Low, Medium, or High thinking on models that support Ollama thinking controls.
+- Run short Python and JavaScript snippets with tool-capable models.
 
 ## Getting Started
 
@@ -32,6 +33,18 @@ npm run start
 Keep the virtual environment activated in that terminal while running the app. `py -3.14 -m pip install ...` alone installs packages for Python 3.14, but does not change which version the `python` command (used by the backend start scripts) runs.
 
 The UI and both backends start together. Open the URL printed by Stencil in the terminal.
+
+### Code Execution
+
+Tool-capable models can run Python snippets with the backend's Python interpreter and JavaScript snippets with Node.js. Standard output and errors appear while code is running. Each execution uses a temporary working directory that is removed afterward. Runs default to a 10-second timeout and are capped at 30 seconds; the model can make up to five tool-execution rounds per prompt.
+
+Code runs as the current operating-system user. The temporary working directory and timeout are not an OS security sandbox: executed code may still access files, processes, and network resources available to that user. Use code execution only with models and prompts you trust. Node.js must be available on `PATH` to run JavaScript snippets.
+
+Run the backend execution tests with:
+
+```sh
+python -m unittest backend.test_code_execution
+```
 
 ### Setting Up Large Language Models (LLMs)
 

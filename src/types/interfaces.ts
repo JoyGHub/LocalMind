@@ -101,6 +101,27 @@ export interface Conversation {
   createdAt: number;
   updatedAt: number;
   isTemporary: boolean;
+  projectId?: string | null;
+}
+
+export interface Project {
+  id: string;
+  name: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface ProjectSource {
+  id: string;
+  projectId: string;
+  type: 'file' | 'link' | 'text';
+  title: string;
+  content: string;
+  url?: string;
+  fileName?: string;
+  fileType?: string;
+  fileSize?: number;
+  createdAt: number;
 }
 
 export interface AppSetting {
@@ -116,6 +137,10 @@ export interface Memory {
 
 export interface LocalMindState {
   conversations: Conversation[];
+  projects: Project[];
+  activeProjectSources: ProjectSource[];
+  projectConversations: Conversation[];
+  activeProjectId: string | null;
   activeConversationId: string | null;
   activeMessages: Message[];
   isGenerating: boolean;

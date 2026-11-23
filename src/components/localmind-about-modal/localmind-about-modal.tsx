@@ -52,9 +52,7 @@ export class LocalmindAboutModal {
           </div>
 
           <div class="modal-body">
-            <p class="description">
-              LocalMind is an open-source app for chatting with AI models on your own device, powered by Ollama.
-            </p>
+            <p class="description">LocalMind is an open-source app for chatting with AI models on your own device, powered by Ollama.</p>
 
             <div class="details">
               <div class="detail-row">
@@ -78,9 +76,6 @@ export class LocalmindAboutModal {
 
           <div class="modal-footer">
             <span>Copyright © 2026 Rizea Daniel-Stefan</span>
-            <sl-button variant="default" size="small" onClick={() => this.hide()}>
-              Close
-            </sl-button>
           </div>
         </section>
       </div>

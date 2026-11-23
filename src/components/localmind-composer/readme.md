@@ -10,6 +10,7 @@
 | Property                        | Attribute            | Description | Type                                   | Default     |
 | ------------------------------- | -------------------- | ----------- | -------------------------------------- | ----------- |
 | `chatHistory` _(required)_      | --                   |             | `Message[]`                            | `undefined` |
+| `inline`                        | `inline`             |             | `boolean`                              | `false`     |
 | `isWritingAnswer` _(required)_  | `is-writing-answer`  |             | `boolean`                              | `undefined` |
 | `models` _(required)_           | --                   |             | `OllamaModel[]`                        | `undefined` |
 | `ollamaRunning`                 | `ollama-running`     |             | `boolean`                              | `undefined` |
@@ -34,6 +35,7 @@
 ### Used by
 
  - [localmind-app](../localmind-app)
+ - [localmind-project-view](../localmind-project-view)
 
 ### Depends on
 
@@ -46,6 +48,7 @@ graph TD;
   localmind-composer --> localmind-welcome
   localmind-composer --> localmind-attached-files
   localmind-app --> localmind-composer
+  localmind-project-view --> localmind-composer
   style localmind-composer fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

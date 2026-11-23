@@ -16,9 +16,29 @@ export class ToolService {
         const callingMessage = state.activeMessages.find(
           message => message.role === 'assistant' && message.workflowId === workflowId,
         );
+        let toolMessage: Message | undefined;
+        const publishProgress = (progress: unknown) => {
+          const content = JSON.stringify(progress ?? null);
+          if (toolMessage) {
+            storeService.updateMessageInUI(toolMessage.id, { content });
+            return;
+          }
+
+          toolMessage = {
+            id: nanoid(),
+            conversationId,
+            role: 'tool',
+            name: call.function.name,
+            content,
+            timestamp: Date.now(),
+            workflowId,
+          };
+          storeService.pushMessageToUI(toolMessage);
+        };
         const toolResult = await targetTool.execute(call.function.arguments, {
           messageId: callingMessage?.id,
           signal,
+          onProgress: publishProgress,
         });
         if (signal?.aborted) return detectedAttachment;
 
@@ -27,18 +47,24 @@ export class ToolService {
           if (signal?.aborted) return detectedAttachment;
         }
 
-        const toolMessage: Message = {
-          id: nanoid(),
-          conversationId: conversationId,
-          role: 'tool',
-          name: call.function.name,
-          content: typeof toolResult === 'string' ? toolResult : JSON.stringify(toolResult),
-          timestamp: Date.now(),
-          workflowId,
-        };
-
-        storeService.pushMessageToUI(toolMessage);
-        await storeService.commitMessageToDB(toolMessage);
+        const content = typeof toolResult === 'string' ? toolResult : JSON.stringify(toolResult);
+        if (toolMessage) {
+          storeService.updateMessageInUI(toolMessage.id, { content, timestamp: Date.now() });
+          const completedToolMessage = state.activeMessages.find(message => message.id === toolMessage?.id);
+          if (completedToolMessage) await storeService.commitMessageToDB(completedToolMessage);
+        } else {
+          const completedToolMessage: Message = {
+            id: nanoid(),
+            conversationId,
+            role: 'tool',
+            name: call.function.name,
+            content,
+            timestamp: Date.now(),
+            workflowId,
+          };
+          storeService.pushMessageToUI(completedToolMessage);
+          await storeService.commitMessageToDB(completedToolMessage);
+        }
       }
     }
 

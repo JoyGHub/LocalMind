@@ -1,0 +1,184 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+.project-view {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100%;
+  padding: 48px clamp(24px, 6vw, 88px) 40px;
+}
+
+.project-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.project-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  min-width: 0;
+}
+
+.project-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid #e8e2ff;
+  border-radius: 16px;
+  background: #f5f2ff;
+  color: #633cff;
+  font-size: 1.4rem;
+}
+
+h1 {
+  margin: 0;
+  color: #202124;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 600;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+localmind-composer {
+  display: block;
+  position: relative;
+  width: 100%;
+}
+
+sl-button.add-sources::part(base) {
+  min-height: 42px;
+  border-color: #e5e5e5;
+  color: #3f3f46;
+  font-weight: 600;
+}
+
+.source-count {
+  display: inline-flex;
+  min-width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  margin-left: 5px;
+  border-radius: 999px;
+  background: #f0edff;
+  color: #5e43bd;
+  font-size: 0.75rem;
+}
+
+.project-chats {
+  max-width: 860px;
+  margin: 28px auto 0;
+}
+
+.project-chats h2 {
+  margin: 0 0 12px;
+  color: #333;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.project-chat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.project-chat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid #eeeeef;
+  border-radius: 14px;
+  background: #fff;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.project-chat:hover,
+.project-chat.active {
+  background: #f8f6ff;
+}
+
+.chat-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+  color: #777;
+}
+
+.chat-title {
+  overflow: hidden;
+  color: #333;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chat-time {
+  flex: 0 0 auto;
+  margin-left: auto;
+  color: #999;
+  font-size: 0.85rem;
+}
+
+.options-dropdown {
+  flex: 0 0 32px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.project-chat:hover .options-dropdown,
+.options-dropdown:focus-within {
+  opacity: 1;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 130px;
+  border: 1px dashed #e2e2e5;
+  border-radius: 14px;
+  color: #a0a0a5;
+}
+
+.empty-state sl-icon {
+  font-size: 1.5rem;
+}
+
+.empty-state p {
+  margin: 10px 0 0;
+  font-size: 0.92rem;
+}
+
+@media (max-width: 650px) {
+  .project-view {
+    padding: 28px 18px;
+  }
+
+  .project-header {
+    align-items: center;
+  }
+
+  .chat-time {
+    display: none;
+  }
+}

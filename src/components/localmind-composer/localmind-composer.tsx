@@ -18,6 +18,7 @@ export class LocalMindComposer {
   @Prop() isWritingAnswer!: boolean;
   @Prop() ollamaRunning: boolean;
   @Prop() thinkingLevel: ThinkingLevel = 'off';
+  @Prop() inline: boolean = false;
 
   @State() promptText: string = '';
   @State() useWebSearch!: boolean;
@@ -295,6 +296,7 @@ export class LocalMindComposer {
         class={{
           'wrapper': true,
           'at-bottom': hasHistory,
+          'inline': this.inline,
         }}
       >
         <localmind-welcome chatHistory={this.chatHistory} attachedFiles={this.attachedFiles}></localmind-welcome>

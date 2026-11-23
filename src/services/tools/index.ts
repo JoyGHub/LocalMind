@@ -14,6 +14,7 @@ import { searchMemoriesTool } from './search-memories.tool';
 import { getAllMemoriesTool } from './get-all-memories.tool';
 import { convertTimestampTool } from './convert-timestamp.tool';
 import { searchNearbyPlacesTool, searchPlaceByQueryTool } from './search-places.tool';
+import { executeCodeTool } from './execute-code.tool';
 import { settingsState } from '../settings.service';
 
 export const AVAILABLE_TOOLS: ToolDefinition[] = [
@@ -22,6 +23,7 @@ export const AVAILABLE_TOOLS: ToolDefinition[] = [
   searchWebTool,
   searchNearbyPlacesTool,
   searchPlaceByQueryTool,
+  executeCodeTool,
   getWikipediaSummaryTool,
   getWeatherTool,
   getCountryInfoTool,

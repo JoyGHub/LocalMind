@@ -36,6 +36,10 @@ main {
   position: relative;
 }
 
+.chat-layout {
+  display: contents;
+}
+
 .chat-toolbar {
   position: absolute;
   top: 16px;

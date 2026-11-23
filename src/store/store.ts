@@ -1,11 +1,15 @@
 import { createStore } from '@stencil/store';
 import { dbService } from '../services/database.service';
-import { LocalMindState, Message } from '../types/interfaces';
+import { LocalMindState, Message, ProjectSource } from '../types/interfaces';
 import { nanoid } from 'nanoid';
 import type { MapWidgetData } from '../utils/utility';
 
 const { state } = createStore<LocalMindState>({
   conversations: [],
+  projects: [],
+  activeProjectSources: [],
+  projectConversations: [],
+  activeProjectId: null,
   activeConversationId: null,
   activeMessages: [],
   isGenerating: false,
@@ -13,20 +17,86 @@ const { state } = createStore<LocalMindState>({
 });
 
 export class StoreService {
-  private conversationSelectionId = 0;
+  conversationSelectionId = 0;
+  projectSelectionId = 0;
 
   async initApp() {
     await this.loadConversations();
+    await this.loadProjects();
   }
 
   async loadConversations() {
     state.conversations = await dbService.getSavedConversations();
+    if (state.activeProjectId) {
+      await this.loadProjectConversations(state.activeProjectId);
+    }
+  }
+
+  async loadProjects() {
+    state.projects = await dbService.getProjects();
+  }
+
+  async selectProject(projectId: string) {
+    const selectionId = ++this.projectSelectionId;
+    this.conversationSelectionId++;
+    state.activeProjectId = projectId;
+    state.activeConversationId = null;
+    state.activeMessages = [];
+    state.isTemporaryChat = false;
+    state.projectConversations = [];
+    state.activeProjectSources = [];
+    const [conversations, sources] = await Promise.all([
+      dbService.getProjectConversations(projectId),
+      dbService.getProjectSources(projectId),
+    ]);
+    if (selectionId === this.projectSelectionId && state.activeProjectId === projectId) {
+      state.projectConversations = conversations;
+      state.activeProjectSources = sources;
+    }
+  }
+
+  async createProject(name: string) {
+    const project = await dbService.createProject(name);
+    await this.loadProjects();
+    await this.selectProject(project.id);
+    return project;
+  }
+
+  async assignConversationToProject(conversationId: string, projectId: string) {
+    await dbService.assignConversationToProject(conversationId, projectId);
+    await this.loadConversations();
+    if (state.activeConversationId === conversationId) {
+      const selectionId = ++this.projectSelectionId;
+      state.activeProjectId = projectId;
+      state.projectConversations = [];
+      state.activeProjectSources = [];
+      const [conversations, sources] = await Promise.all([
+        dbService.getProjectConversations(projectId),
+        dbService.getProjectSources(projectId),
+      ]);
+      if (selectionId === this.projectSelectionId && state.activeProjectId === projectId) {
+        state.projectConversations = conversations;
+        state.activeProjectSources = sources;
+      }
+    }
+  }
+
+  async loadProjectConversations(projectId: string) {
+    const selectionId = this.projectSelectionId;
+    const conversations = await dbService.getProjectConversations(projectId);
+    if (selectionId === this.projectSelectionId && state.activeProjectId === projectId) {
+      state.projectConversations = conversations;
+    }
   }
 
   startNewChat() {
     this.conversationSelectionId++;
+    this.projectSelectionId++;
+    state.activeProjectId = null;
+    state.activeProjectSources = [];
     state.activeConversationId = null;
     state.activeMessages = [];
+    state.projectConversations = [];
     state.isTemporaryChat = false;
   }
 
@@ -37,11 +107,27 @@ export class StoreService {
     state.isTemporaryChat = true;
   }
 
-  async switchConversation(id: string) {
+  async switchConversation(id: string, projectId: string | null) {
     const selectionId = ++this.conversationSelectionId;
     state.activeConversationId = id;
     state.isTemporaryChat = false;
     state.activeMessages = [];
+    if (state.activeProjectId !== projectId) {
+      const projectSelectionId = ++this.projectSelectionId;
+      state.activeProjectId = projectId;
+      state.projectConversations = [];
+      state.activeProjectSources = [];
+      if (projectId) {
+        const [conversations, sources] = await Promise.all([
+          dbService.getProjectConversations(projectId),
+          dbService.getProjectSources(projectId),
+        ]);
+        if (projectSelectionId === this.projectSelectionId && state.activeProjectId === projectId) {
+          state.projectConversations = conversations;
+          state.activeProjectSources = sources;
+        }
+      }
+    }
     const messages = await dbService.getMessagesForConversation(id);
     if (selectionId === this.conversationSelectionId && state.activeConversationId === id) {
       state.activeMessages = messages;
@@ -51,6 +137,18 @@ export class StoreService {
   async renameConversation(id: string, newName: string) {
     await dbService.updateConversationName(id, newName);
     await this.loadConversations();
+  }
+
+  async addProjectSource(source: ProjectSource) {
+    await dbService.addProjectSource(source);
+    if (state.activeProjectId === source.projectId) {
+      state.activeProjectSources = [...state.activeProjectSources, source].sort((a, b) => a.createdAt - b.createdAt);
+    }
+  }
+
+  async removeProjectSource(sourceId: string) {
+    await dbService.deleteProjectSource(sourceId);
+    state.activeProjectSources = state.activeProjectSources.filter(source => source.id !== sourceId);
   }
 
   async deleteConversation(id: string) {
@@ -70,7 +168,7 @@ export class StoreService {
     const id = nanoid();
     const name = firstPrompt.length > 30 ? `${firstPrompt.substring(0, 30)}...` : firstPrompt;
 
-    await dbService.createConversation(id, name, false);
+    await dbService.createConversation(id, name, false, state.activeProjectId);
     await this.loadConversations();
 
     if (selectionId === this.conversationSelectionId) {

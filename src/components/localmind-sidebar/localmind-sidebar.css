@@ -107,6 +107,76 @@ sl-button.nav-button sl-icon {
   width: 100%;
 }
 
+.projects-section {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: 40%;
+  gap: 4px;
+}
+
+.projects-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 30px;
+}
+
+.section-title {
+  padding: 0 4px;
+  color: #a0a0a0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+sl-button.new-project-button::part(base) {
+  height: 30px;
+  padding: 0 8px;
+  color: #633cff;
+  font-size: 0.8rem;
+}
+
+.project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: auto;
+  scrollbar-width: none;
+}
+
+.project-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: #4a4a4a;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.project-item:hover,
+.project-item.active {
+  background: #f4f0ff;
+  color: #5330df;
+}
+
+.project-item sl-icon {
+  flex: 0 0 auto;
+}
+
+.project-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 sl-button.new-chat-button {
   width: 100%;
 }
@@ -162,6 +232,7 @@ sl-button.new-chat-button::part(base) {
 }
 
 .sidebar.collapsed localmind-history,
+.sidebar.collapsed .projects-section,
 .sidebar.collapsed localmind-ollama-status {
   display: none;
 }

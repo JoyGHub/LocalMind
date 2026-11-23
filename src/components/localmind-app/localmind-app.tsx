@@ -177,6 +177,11 @@ export class LocalMindApp {
     this.applyDefaultModel();
   }
 
+  @Listen('projectChangeEvent')
+  handleProjectChangeEvent() {
+    this.cancelActiveRequest();
+  }
+
   @Listen('sidebarToggleEvent')
   handleSidebarToggleEvent() {
     this.sidebarCollapsed = !this.sidebarCollapsed;
@@ -361,38 +366,51 @@ export class LocalMindApp {
         <localmind-attachment-overlay></localmind-attachment-overlay>
         <localmind-sidebar class={{ collapsed: this.sidebarCollapsed }} collapsed={this.sidebarCollapsed} models={this.models} ollamaRunning={this.ollamaRunning}></localmind-sidebar>
         <main class="content" onWheel={event => this.handleMainWheel(event)}>
-          <div class="chat-toolbar">
-            <sl-button class={{ 'temp-chat-button': true, active: state.isTemporaryChat }} onClick={() => this.startTemporaryChat()} aria-label="Start temporary chat">
-              <sl-icon name="chat-dots" slot="prefix"></sl-icon>
-              Temporary chat
-            </sl-button>
-          </div>
-          <localmind-temp-conv-card isActive={state.isTemporaryChat}></localmind-temp-conv-card>
-          <div class="current-chat">
-            <div class="messages">
-              <div class="messages-content">
-                {displayableMessages.map((message, index) => (
-                  <localmind-message
-                    key={message.id}
-                    message={message}
-                    isWritingAnswer={this.isWritingAnswer && index === displayableMessages.length - 1 && message.role === 'assistant'}
-                    isLastMessage={index === displayableMessages.length - 1}
-                  />
-                ))}
-                <localmind-request-spinner requestIsPending={this.requestIsPending}></localmind-request-spinner>
+          {state.activeProjectId && !state.activeConversationId && !state.isTemporaryChat ? (
+            <localmind-project-view
+              models={this.models}
+              selectedModel={this.selectedModel}
+              requestIsPending={this.requestIsPending}
+              isWritingAnswer={this.isWritingAnswer}
+              ollamaRunning={this.ollamaRunning}
+              thinkingLevel={this.thinkingLevel}
+            ></localmind-project-view>
+          ) : (
+            <div class="chat-layout">
+              <div class="chat-toolbar">
+                <sl-button class={{ 'temp-chat-button': true, active: state.isTemporaryChat }} onClick={() => this.startTemporaryChat()} aria-label="Start temporary chat">
+                  <sl-icon name="chat-dots" slot="prefix"></sl-icon>
+                  Temporary chat
+                </sl-button>
               </div>
-              <div class="bottom-fade"></div>
+              <localmind-temp-conv-card isActive={state.isTemporaryChat}></localmind-temp-conv-card>
+              <div class="current-chat">
+                <div class="messages">
+                  <div class="messages-content">
+                    {displayableMessages.map((message, index) => (
+                      <localmind-message
+                        key={message.id}
+                        message={message}
+                        isWritingAnswer={this.isWritingAnswer && index === displayableMessages.length - 1 && message.role === 'assistant'}
+                        isLastMessage={index === displayableMessages.length - 1}
+                      />
+                    ))}
+                    <localmind-request-spinner requestIsPending={this.requestIsPending}></localmind-request-spinner>
+                  </div>
+                  <div class="bottom-fade"></div>
+                </div>
+              </div>
+              <localmind-composer
+                models={this.models}
+                selectedModel={this.selectedModel}
+                chatHistory={state.activeMessages}
+                requestIsPending={this.requestIsPending}
+                isWritingAnswer={this.isWritingAnswer}
+                ollamaRunning={this.ollamaRunning}
+                thinkingLevel={this.thinkingLevel}
+              ></localmind-composer>
             </div>
-          </div>
-          <localmind-composer
-            models={this.models}
-            selectedModel={this.selectedModel}
-            chatHistory={state.activeMessages}
-            requestIsPending={this.requestIsPending}
-            isWritingAnswer={this.isWritingAnswer}
-            ollamaRunning={this.ollamaRunning}
-            thinkingLevel={this.thinkingLevel}
-          ></localmind-composer>
+          )}
         </main>
         <localmind-listen-card ref={el => (this.listenCardEl = el)}></localmind-listen-card>
         <localmind-models ref={el => (this.modelsCardEl = el)} models={this.models}></localmind-models>

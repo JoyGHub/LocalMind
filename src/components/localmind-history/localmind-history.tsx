@@ -2,6 +2,7 @@ import { Component, h, Listen, Event, EventEmitter } from '@stencil/core';
 import state, { storeService } from '../../store/store';
 import { Alert } from '../../services/alert.service';
 import { formatTime } from '../../utils/utils';
+import { Conversation } from '../../types/interfaces';
 
 @Component({
   tag: 'localmind-history',
@@ -14,11 +15,14 @@ export class LocalMindHistory {
 
   renameModalEl!: HTMLLocalmindRenameModalElement;
   deleteModalEl!: HTMLLocalmindDeleteModalElement;
+  moveToProjectModalEl!: HTMLLocalmindMoveToProjectModalElement;
+
+  @Event({ bubbles: true, composed: true }) projectChangeEvent!: EventEmitter<void>;
 
   async loadConversation(id: string) {
     try {
       this.conversationChangeEvent.emit();
-      await storeService.switchConversation(id);
+      await storeService.switchConversation(id, null);
     } catch (error) {
       Alert.error('Error loading conversation:' + error);
     }
@@ -49,6 +53,20 @@ export class LocalMindHistory {
     }
   }
 
+  @Listen('moveToProjectConfirm')
+  async handleMoveToProjectConfirm(event: CustomEvent<{ conversationId: string; projectId: string }>) {
+    const { conversationId, projectId } = event.detail;
+    try {
+      if (state.activeConversationId === conversationId) {
+        this.conversationChangeEvent.emit();
+      }
+      await storeService.assignConversationToProject(conversationId, projectId);
+      this.projectChangeEvent.emit();
+    } catch (error) {
+      Alert.error(`Failed to move conversation ${conversationId} to project: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+
   renameConversation(id: string) {
     if (!this.renameModalEl) {
       console.warn('Rename modal element is not initialized.');
@@ -73,7 +91,15 @@ export class LocalMindHistory {
     }
   }
 
-  renderMenu(conversation: any) {
+  moveConversationToProject(id: string) {
+    if (state.projects.length === 0) {
+      Alert.error('Create a project before moving a chat.');
+      return;
+    }
+    this.moveToProjectModalEl?.show(id);
+  }
+
+  renderMenu(conversation: Conversation) {
     return (
       <sl-dropdown placement="bottom-end" class="options-dropdown" onClick={(e: any) => e.stopPropagation()}>
         <sl-icon-button slot="trigger" name="three-dots-vertical" label="Options"></sl-icon-button>
@@ -81,6 +107,10 @@ export class LocalMindHistory {
           <sl-menu-item onClick={() => this.renameConversation(conversation.id)}>
             <sl-icon slot="prefix" name="pencil"></sl-icon>
             Rename
+          </sl-menu-item>
+          <sl-menu-item onClick={() => this.moveConversationToProject(conversation.id)}>
+            <sl-icon slot="prefix" name="folder-plus"></sl-icon>
+            Add to project
           </sl-menu-item>
           <sl-menu-item onClick={() => this.deleteConversation(conversation.id)}>
             <sl-icon slot="prefix" name="trash"></sl-icon>
@@ -119,6 +149,7 @@ export class LocalMindHistory {
 
         <localmind-rename-modal ref={el => (this.renameModalEl = el as HTMLLocalmindRenameModalElement)}></localmind-rename-modal>
         <localmind-delete-modal ref={el => (this.deleteModalEl = el as HTMLLocalmindDeleteModalElement)}></localmind-delete-modal>
+        <localmind-move-to-project-modal ref={el => (this.moveToProjectModalEl = el as HTMLLocalmindMoveToProjectModalElement)}></localmind-move-to-project-modal>
       </div>
     );
   }

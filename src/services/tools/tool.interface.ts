@@ -15,4 +15,5 @@ export interface ToolDefinition {
 export interface ToolExecutionContext {
   messageId?: string;
   signal?: AbortSignal;
+  onProgress?: (progress: unknown) => void;
 }

@@ -1,5 +1,6 @@
 import { Component, h, Prop, Event, EventEmitter } from '@stencil/core';
-import { storeService } from '../../store/store';
+import state, { storeService } from '../../store/store';
+import { Alert } from '../../services/alert.service';
 
 @Component({
   tag: 'localmind-sidebar',
@@ -14,10 +15,12 @@ export class LocalMindSidebar {
 
   settingsModalEl!: HTMLLocalmindSettingsElement;
   aboutModalEl!: HTMLLocalmindAboutModalElement;
+  createProjectModalEl!: HTMLLocalmindCreateProjectModalElement;
 
   @Event({ bubbles: true, composed: true }) modelsCardEvent!: EventEmitter<void>;
   @Event({ bubbles: true, composed: true }) newChatEvent!: EventEmitter<void>;
   @Event({ bubbles: true, composed: true }) sidebarToggleEvent!: EventEmitter<void>;
+  @Event({ bubbles: true, composed: true }) projectChangeEvent!: EventEmitter<void>;
 
   sendModelsCardEvent() {
     this.modelsCardEvent.emit();
@@ -26,6 +29,15 @@ export class LocalMindSidebar {
   startNewChat() {
     storeService.startNewChat();
     this.newChatEvent.emit();
+  }
+
+  async selectProject(projectId: string) {
+    this.projectChangeEvent.emit();
+    try {
+      await storeService.selectProject(projectId);
+    } catch (error) {
+      Alert.error(`Failed to open project: ${error instanceof Error ? error.message : String(error)}`);
+    }
   }
 
   openSettings() {
@@ -66,6 +78,30 @@ export class LocalMindSidebar {
             <span class="button-label">Models Manager</span>
           </sl-button>
 
+          <div class="projects-section">
+            <div class="projects-heading">
+              <span class="section-title">Projects</span>
+              <sl-button class="new-project-button" variant="text" onClick={() => this.createProjectModalEl?.show()}>
+                <sl-icon name="plus" slot="prefix"></sl-icon>
+                <span class="button-label">New project</span>
+              </sl-button>
+            </div>
+            <div class="project-list">
+              {state.projects.map(project => (
+                <button
+                  type="button"
+                  class={{ 'project-item': true, active: state.activeProjectId === project.id }}
+                  key={project.id}
+                  onClick={() => this.selectProject(project.id)}
+                  title={project.name}
+                >
+                  <sl-icon name="journal-bookmark"></sl-icon>
+                  <span class="project-name">{project.name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
           <localmind-history></localmind-history>
         </div>
 
@@ -85,6 +121,7 @@ export class LocalMindSidebar {
 
         <localmind-settings ref={el => (this.settingsModalEl = el as HTMLLocalmindSettingsElement)} models={this.models} ollamaRunning={this.ollamaRunning}></localmind-settings>
         <localmind-about-modal ref={el => (this.aboutModalEl = el as HTMLLocalmindAboutModalElement)}></localmind-about-modal>
+        <localmind-create-project-modal ref={el => (this.createProjectModalEl = el as HTMLLocalmindCreateProjectModalElement)}></localmind-create-project-modal>
       </aside>
     );
   }

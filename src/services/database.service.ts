@@ -1,5 +1,5 @@
 import Dexie, { Table } from 'dexie';
-import { AppSetting, Conversation, Memory, Message } from '../types/interfaces';
+import { AppSetting, Conversation, Memory, Message, Project, ProjectSource } from '../types/interfaces';
 import type { MapWidgetData } from '../utils/utility';
 
 export class LocalMindDB extends Dexie {
@@ -7,6 +7,8 @@ export class LocalMindDB extends Dexie {
   messages!: Table<Message, string>;
   settings!: Table<AppSetting, string>;
   memories!: Table<Memory, string>;
+  projects!: Table<Project, string>;
+  projectSources!: Table<ProjectSource, string>;
 
   constructor() {
     super('LocalMindDB');
@@ -25,6 +27,23 @@ export class LocalMindDB extends Dexie {
       settings: 'key',
       memories: 'id, createdAt',
     });
+
+    this.version(3).stores({
+      conversations: 'id, updatedAt, isTemporary, projectId',
+      messages: 'id, conversationId, timestamp',
+      settings: 'key',
+      memories: 'id, createdAt',
+      projects: 'id, updatedAt',
+    });
+
+    this.version(4).stores({
+      conversations: 'id, updatedAt, isTemporary, projectId',
+      messages: 'id, conversationId, timestamp',
+      settings: 'key',
+      memories: 'id, createdAt',
+      projects: 'id, updatedAt',
+      projectSources: 'id, projectId, createdAt',
+    });
   }
 }
 
@@ -35,11 +54,16 @@ export class DatabaseService {
     return await db.conversations
       .orderBy('updatedAt')
       .reverse()
-      .filter(c => c.isTemporary === false)
+      .filter(c => c.isTemporary === false && !c.projectId)
       .toArray();
   }
 
-  async createConversation(id: string, name: string, isTemporary: boolean = false): Promise<void> {
+  async getProjectConversations(projectId: string): Promise<Conversation[]> {
+    const conversations = await db.conversations.where('projectId').equals(projectId).toArray();
+    return conversations.sort((a, b) => b.updatedAt - a.updatedAt);
+  }
+
+  async createConversation(id: string, name: string, isTemporary: boolean = false, projectId?: string | null): Promise<void> {
     const now = Date.now();
     await db.conversations.add({
       id,
@@ -47,7 +71,47 @@ export class DatabaseService {
       createdAt: now,
       updatedAt: now,
       isTemporary,
+      projectId,
     });
+  }
+
+  async getProjects(): Promise<Project[]> {
+    return db.projects.orderBy('updatedAt').reverse().toArray();
+  }
+
+  async createProject(name: string): Promise<Project> {
+    const now = Date.now();
+    const project: Project = { id: crypto.randomUUID(), name: name.trim(), createdAt: now, updatedAt: now };
+    await db.projects.add(project);
+    return project;
+  }
+
+  async deleteProject(id: string): Promise<void> {
+    await db.transaction('rw', db.projects, db.conversations, db.projectSources, async () => {
+      await db.projects.delete(id);
+      await db.conversations.where('projectId').equals(id).modify({ projectId: null });
+      await db.projectSources.where('projectId').equals(id).delete();
+    });
+  }
+
+  async getProjectSources(projectId: string): Promise<ProjectSource[]> {
+    return db.projectSources.where('projectId').equals(projectId).sortBy('createdAt');
+  }
+
+  async addProjectSource(source: ProjectSource): Promise<void> {
+    await db.projectSources.add(source);
+  }
+
+  async deleteProjectSource(sourceId: string): Promise<void> {
+    await db.projectSources.delete(sourceId);
+  }
+
+  async renameProject(id: string, newName: string): Promise<void> {
+    await db.projects.update(id, { name: newName.trim(), updatedAt: Date.now() });
+  }
+
+  async assignConversationToProject(conversationId: string, projectId: string): Promise<void> {
+    await db.conversations.update(conversationId, { projectId, updatedAt: Date.now() });
   }
 
   async updateConversationName(id: string, newName: string): Promise<void> {
