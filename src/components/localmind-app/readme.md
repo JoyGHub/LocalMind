@@ -49,6 +49,10 @@ graph TD;
   localmind-message-actions --> localmind-message-share-card
   localmind-composer --> localmind-welcome
   localmind-composer --> localmind-attached-files
+  localmind-models --> localmind-model-overview
+  localmind-models --> localmind-model-table
+  localmind-models --> localmind-model-download-section
+  localmind-models --> localmind-model-delete-dialog
   style localmind-app fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

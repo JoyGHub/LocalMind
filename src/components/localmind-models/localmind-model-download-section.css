@@ -1,0 +1,96 @@
+:host {
+  display: block;
+  flex: none;
+}
+
+.download-section {
+  padding: 24px 32px;
+  border-top: 1px solid var(--border-color);
+  background: #fafafa;
+  user-select: none;
+}
+
+.download-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+}
+
+.icon-box.primary-light {
+  background: #f5f3ff;
+  color: #8b5cf6;
+}
+
+.main-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.sub-title {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.download-controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.model-input {
+  flex: 1;
+}
+
+.model-input::part(base) {
+  background: white;
+}
+
+.primary-btn {
+  --sl-color-primary-600: #6d28d9;
+  --sl-color-primary-500: #7c3aed;
+  --sl-color-primary-700: #5b21b6;
+}
+
+.primary-btn::part(base) {
+  background-color: var(--sl-color-primary-600);
+  border-color: var(--sl-color-primary-600);
+  color: white;
+}
+
+.progress-container {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.inactive-download {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.active-download {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.active-download sl-progress-bar {
+  flex: 1;
+  --height: 6px;
+  --track-color: #e5e7eb;
+  --indicator-color: #6d28d9;
+}

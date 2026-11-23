@@ -72,6 +72,23 @@ export namespace Components {
     interface LocalmindMessageStats {
         "message": Message;
     }
+    interface LocalmindModelDeleteDialog {
+        "isDeleting": boolean;
+        "modelName": string | null;
+    }
+    interface LocalmindModelDownloadSection {
+        "isInstalling": boolean;
+        "modelName": string;
+        "progress": number;
+        "statusMessage": string;
+    }
+    interface LocalmindModelOverview {
+        "models": OllamaModel1[];
+    }
+    interface LocalmindModelTable {
+        "defaultModel": string;
+        "models": OllamaModel1[];
+    }
     interface LocalmindModels {
         "hide": () => Promise<void>;
         "models": OllamaModel1[];
@@ -158,6 +175,22 @@ export interface LocalmindMessageActionsCustomEvent<T> extends CustomEvent<T> {
 export interface LocalmindMessageShareCardCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLLocalmindMessageShareCardElement;
+}
+export interface LocalmindModelDeleteDialogCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLLocalmindModelDeleteDialogElement;
+}
+export interface LocalmindModelDownloadSectionCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLLocalmindModelDownloadSectionElement;
+}
+export interface LocalmindModelOverviewCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLLocalmindModelOverviewElement;
+}
+export interface LocalmindModelTableCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLLocalmindModelTableElement;
 }
 export interface LocalmindModelsCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -327,6 +360,80 @@ declare global {
         prototype: HTMLLocalmindMessageStatsElement;
         new (): HTMLLocalmindMessageStatsElement;
     };
+    interface HTMLLocalmindModelDeleteDialogElementEventMap {
+        "cancelEvent": void;
+        "confirmEvent": void;
+    }
+    interface HTMLLocalmindModelDeleteDialogElement extends Components.LocalmindModelDeleteDialog, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLLocalmindModelDeleteDialogElementEventMap>(type: K, listener: (this: HTMLLocalmindModelDeleteDialogElement, ev: LocalmindModelDeleteDialogCustomEvent<HTMLLocalmindModelDeleteDialogElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLLocalmindModelDeleteDialogElementEventMap>(type: K, listener: (this: HTMLLocalmindModelDeleteDialogElement, ev: LocalmindModelDeleteDialogCustomEvent<HTMLLocalmindModelDeleteDialogElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLLocalmindModelDeleteDialogElement: {
+        prototype: HTMLLocalmindModelDeleteDialogElement;
+        new (): HTMLLocalmindModelDeleteDialogElement;
+    };
+    interface HTMLLocalmindModelDownloadSectionElementEventMap {
+        "modelInputEvent": string;
+        "installRequestedEvent": void;
+    }
+    interface HTMLLocalmindModelDownloadSectionElement extends Components.LocalmindModelDownloadSection, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLLocalmindModelDownloadSectionElementEventMap>(type: K, listener: (this: HTMLLocalmindModelDownloadSectionElement, ev: LocalmindModelDownloadSectionCustomEvent<HTMLLocalmindModelDownloadSectionElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLLocalmindModelDownloadSectionElementEventMap>(type: K, listener: (this: HTMLLocalmindModelDownloadSectionElement, ev: LocalmindModelDownloadSectionCustomEvent<HTMLLocalmindModelDownloadSectionElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLLocalmindModelDownloadSectionElement: {
+        prototype: HTMLLocalmindModelDownloadSectionElement;
+        new (): HTMLLocalmindModelDownloadSectionElement;
+    };
+    interface HTMLLocalmindModelOverviewElementEventMap {
+        "closeEvent": void;
+    }
+    interface HTMLLocalmindModelOverviewElement extends Components.LocalmindModelOverview, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLLocalmindModelOverviewElementEventMap>(type: K, listener: (this: HTMLLocalmindModelOverviewElement, ev: LocalmindModelOverviewCustomEvent<HTMLLocalmindModelOverviewElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLLocalmindModelOverviewElementEventMap>(type: K, listener: (this: HTMLLocalmindModelOverviewElement, ev: LocalmindModelOverviewCustomEvent<HTMLLocalmindModelOverviewElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLLocalmindModelOverviewElement: {
+        prototype: HTMLLocalmindModelOverviewElement;
+        new (): HTMLLocalmindModelOverviewElement;
+    };
+    interface HTMLLocalmindModelTableElementEventMap {
+        "copyModelEvent": string;
+        "viewModelfileEvent": string;
+        "openLibraryEvent": string;
+        "setDefaultEvent": string;
+        "deleteModelEvent": string;
+    }
+    interface HTMLLocalmindModelTableElement extends Components.LocalmindModelTable, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLLocalmindModelTableElementEventMap>(type: K, listener: (this: HTMLLocalmindModelTableElement, ev: LocalmindModelTableCustomEvent<HTMLLocalmindModelTableElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLLocalmindModelTableElementEventMap>(type: K, listener: (this: HTMLLocalmindModelTableElement, ev: LocalmindModelTableCustomEvent<HTMLLocalmindModelTableElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLLocalmindModelTableElement: {
+        prototype: HTMLLocalmindModelTableElement;
+        new (): HTMLLocalmindModelTableElement;
+    };
     interface HTMLLocalmindModelsElementEventMap {
         "modelsUpdatedEvent": any;
     }
@@ -467,6 +574,10 @@ declare global {
         "localmind-message-actions": HTMLLocalmindMessageActionsElement;
         "localmind-message-share-card": HTMLLocalmindMessageShareCardElement;
         "localmind-message-stats": HTMLLocalmindMessageStatsElement;
+        "localmind-model-delete-dialog": HTMLLocalmindModelDeleteDialogElement;
+        "localmind-model-download-section": HTMLLocalmindModelDownloadSectionElement;
+        "localmind-model-overview": HTMLLocalmindModelOverviewElement;
+        "localmind-model-table": HTMLLocalmindModelTableElement;
         "localmind-models": HTMLLocalmindModelsElement;
         "localmind-ollama-status": HTMLLocalmindOllamaStatusElement;
         "localmind-rename-modal": HTMLLocalmindRenameModalElement;
@@ -548,6 +659,33 @@ declare namespace LocalJSX {
     interface LocalmindMessageStats {
         "message": Message;
     }
+    interface LocalmindModelDeleteDialog {
+        "isDeleting"?: boolean;
+        "modelName"?: string | null;
+        "onCancelEvent"?: (event: LocalmindModelDeleteDialogCustomEvent<void>) => void;
+        "onConfirmEvent"?: (event: LocalmindModelDeleteDialogCustomEvent<void>) => void;
+    }
+    interface LocalmindModelDownloadSection {
+        "isInstalling"?: boolean;
+        "modelName"?: string;
+        "onInstallRequestedEvent"?: (event: LocalmindModelDownloadSectionCustomEvent<void>) => void;
+        "onModelInputEvent"?: (event: LocalmindModelDownloadSectionCustomEvent<string>) => void;
+        "progress"?: number;
+        "statusMessage"?: string;
+    }
+    interface LocalmindModelOverview {
+        "models"?: OllamaModel1[];
+        "onCloseEvent"?: (event: LocalmindModelOverviewCustomEvent<void>) => void;
+    }
+    interface LocalmindModelTable {
+        "defaultModel"?: string;
+        "models"?: OllamaModel1[];
+        "onCopyModelEvent"?: (event: LocalmindModelTableCustomEvent<string>) => void;
+        "onDeleteModelEvent"?: (event: LocalmindModelTableCustomEvent<string>) => void;
+        "onOpenLibraryEvent"?: (event: LocalmindModelTableCustomEvent<string>) => void;
+        "onSetDefaultEvent"?: (event: LocalmindModelTableCustomEvent<string>) => void;
+        "onViewModelfileEvent"?: (event: LocalmindModelTableCustomEvent<string>) => void;
+    }
     interface LocalmindModels {
         "models"?: OllamaModel1[];
         "onModelsUpdatedEvent"?: (event: LocalmindModelsCustomEvent<any>) => void;
@@ -620,6 +758,10 @@ declare namespace LocalJSX {
         "localmind-message-actions": LocalmindMessageActions;
         "localmind-message-share-card": LocalmindMessageShareCard;
         "localmind-message-stats": LocalmindMessageStats;
+        "localmind-model-delete-dialog": LocalmindModelDeleteDialog;
+        "localmind-model-download-section": LocalmindModelDownloadSection;
+        "localmind-model-overview": LocalmindModelOverview;
+        "localmind-model-table": LocalmindModelTable;
         "localmind-models": LocalmindModels;
         "localmind-ollama-status": LocalmindOllamaStatus;
         "localmind-rename-modal": LocalmindRenameModal;
@@ -655,6 +797,10 @@ declare module "@stencil/core" {
             "localmind-message-actions": LocalJSX.LocalmindMessageActions & JSXBase.HTMLAttributes<HTMLLocalmindMessageActionsElement>;
             "localmind-message-share-card": LocalJSX.LocalmindMessageShareCard & JSXBase.HTMLAttributes<HTMLLocalmindMessageShareCardElement>;
             "localmind-message-stats": LocalJSX.LocalmindMessageStats & JSXBase.HTMLAttributes<HTMLLocalmindMessageStatsElement>;
+            "localmind-model-delete-dialog": LocalJSX.LocalmindModelDeleteDialog & JSXBase.HTMLAttributes<HTMLLocalmindModelDeleteDialogElement>;
+            "localmind-model-download-section": LocalJSX.LocalmindModelDownloadSection & JSXBase.HTMLAttributes<HTMLLocalmindModelDownloadSectionElement>;
+            "localmind-model-overview": LocalJSX.LocalmindModelOverview & JSXBase.HTMLAttributes<HTMLLocalmindModelOverviewElement>;
+            "localmind-model-table": LocalJSX.LocalmindModelTable & JSXBase.HTMLAttributes<HTMLLocalmindModelTableElement>;
             "localmind-models": LocalJSX.LocalmindModels & JSXBase.HTMLAttributes<HTMLLocalmindModelsElement>;
             "localmind-ollama-status": LocalJSX.LocalmindOllamaStatus & JSXBase.HTMLAttributes<HTMLLocalmindOllamaStatusElement>;
             "localmind-rename-modal": LocalJSX.LocalmindRenameModal & JSXBase.HTMLAttributes<HTMLLocalmindRenameModalElement>;

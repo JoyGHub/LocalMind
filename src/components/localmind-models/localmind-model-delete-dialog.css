@@ -1,0 +1,41 @@
+:host {
+  display: contents;
+}
+
+.confirmation-dialog-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  background: white;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 1100;
+}
+
+.confirmation-dialog-header {
+  background: #ef4444;
+  color: white;
+  padding: 16px 20px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.confirmation-dialog {
+  padding: 24px 20px;
+}
+
+.confirmation-dialog p {
+  margin: 0 0 24px 0;
+  font-size: 15px;
+  color: var(--text-main);
+  line-height: 1.5;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
