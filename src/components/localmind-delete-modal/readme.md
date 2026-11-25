@@ -7,16 +7,18 @@
 
 ## Properties
 
-| Property | Attribute | Description | Type      | Default |
-| -------- | --------- | ----------- | --------- | ------- |
-| `open`   | `open`    |             | `boolean` | `false` |
+| Property     | Attribute     | Description | Type                          | Default          |
+| ------------ | ------------- | ----------- | ----------------------------- | ---------------- |
+| `entityType` | `entity-type` |             | `"conversation" \| "project"` | `'conversation'` |
+| `open`       | `open`        |             | `boolean`                     | `false`          |
 
 
 ## Events
 
-| Event           | Description | Type                  |
-| --------------- | ----------- | --------------------- |
-| `deleteConfirm` |             | `CustomEvent<string>` |
+| Event                  | Description | Type                                                 |
+| ---------------------- | ----------- | ---------------------------------------------------- |
+| `deleteConfirm`        |             | `CustomEvent<string>`                                |
+| `projectDeleteConfirm` |             | `CustomEvent<{ id: string; deleteChats: boolean; }>` |
 
 
 ## Methods
@@ -55,12 +57,14 @@ Type: `Promise<void>`
 
  - [localmind-history](../localmind-history)
  - [localmind-project-view](../localmind-project-view)
+ - [localmind-sidebar](../localmind-sidebar)
 
 ### Graph
 ```mermaid
 graph TD;
   localmind-history --> localmind-delete-modal
   localmind-project-view --> localmind-delete-modal
+  localmind-sidebar --> localmind-delete-modal
   style localmind-delete-modal fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

@@ -8,11 +8,13 @@ import { Component, h, Prop, State, Method, Event, EventEmitter } from '@stencil
 })
 export class LocalMindRenameModal {
   @Prop({ mutable: true, reflect: true }) open: boolean = false;
+  @Prop() entityType: 'conversation' | 'project' = 'conversation';
 
   @State() conversationId!: string;
   @State() newName: string = '';
 
   @Event({ bubbles: true, composed: true }) renameConfirm!: EventEmitter<{ id: string; newName: string }>;
+  @Event({ bubbles: true, composed: true }) projectRenameConfirm!: EventEmitter<{ id: string; newName: string }>;
 
   isMouseDownOnBackdrop: boolean = false;
 
@@ -61,7 +63,11 @@ export class LocalMindRenameModal {
   saveRename() {
     const trimmedName = this.newName.trim();
     if (trimmedName !== '') {
-      this.renameConfirm.emit({ id: this.conversationId, newName: trimmedName });
+      if (this.entityType === 'project') {
+        this.projectRenameConfirm.emit({ id: this.conversationId, newName: trimmedName });
+      } else {
+        this.renameConfirm.emit({ id: this.conversationId, newName: trimmedName });
+      }
       this.hide();
     }
   }
@@ -73,7 +79,7 @@ export class LocalMindRenameModal {
       <div class="backdrop" onMouseDown={e => this.handleMouseDown(e)} onMouseUp={e => this.handleMouseUp(e)}>
         <div class="modal-card">
           <div class="modal-header">
-            <h3>Rename Conversation</h3>
+            <h3>Rename {this.entityType === 'project' ? 'Project' : 'Conversation'}</h3>
             <sl-icon-button name="x-lg" label="Close" onClick={() => this.hide()}></sl-icon-button>
           </div>
 

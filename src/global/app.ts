@@ -25,7 +25,7 @@ import '@shoelace-style/shoelace/dist/components/textarea/textarea.js';
 import '@shoelace-style/shoelace/dist/components/color-picker/color-picker.js';
 import '@shoelace-style/shoelace/dist/components/switch/switch.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
-
+import '@shoelace-style/shoelace/dist/components/checkbox/checkbox.js';
 setBasePath('https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.0/cdn/');
 
 export default () => {

@@ -86,10 +86,19 @@ export class DatabaseService {
     return project;
   }
 
-  async deleteProject(id: string): Promise<void> {
-    await db.transaction('rw', db.projects, db.conversations, db.projectSources, async () => {
+  async deleteProject(id: string, deleteConversations: boolean = false): Promise<void> {
+    await db.transaction('rw', db.projects, db.conversations, db.messages, db.projectSources, async () => {
+      const conversations = await db.conversations.where('projectId').equals(id).toArray();
       await db.projects.delete(id);
-      await db.conversations.where('projectId').equals(id).modify({ projectId: null });
+      if (deleteConversations) {
+        const conversationIds = conversations.map(conversation => conversation.id);
+        if (conversationIds.length > 0) {
+          await db.messages.where('conversationId').anyOf(conversationIds).delete();
+          await db.conversations.bulkDelete(conversationIds);
+        }
+      } else {
+        await db.conversations.where('projectId').equals(id).modify({ projectId: null });
+      }
       await db.projectSources.where('projectId').equals(id).delete();
     });
   }

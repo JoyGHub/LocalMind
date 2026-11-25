@@ -7,16 +7,18 @@
 
 ## Properties
 
-| Property | Attribute | Description | Type      | Default |
-| -------- | --------- | ----------- | --------- | ------- |
-| `open`   | `open`    |             | `boolean` | `false` |
+| Property     | Attribute     | Description | Type                          | Default          |
+| ------------ | ------------- | ----------- | ----------------------------- | ---------------- |
+| `entityType` | `entity-type` |             | `"conversation" \| "project"` | `'conversation'` |
+| `open`       | `open`        |             | `boolean`                     | `false`          |
 
 
 ## Events
 
-| Event           | Description | Type                                            |
-| --------------- | ----------- | ----------------------------------------------- |
-| `renameConfirm` |             | `CustomEvent<{ id: string; newName: string; }>` |
+| Event                  | Description | Type                                            |
+| ---------------------- | ----------- | ----------------------------------------------- |
+| `projectRenameConfirm` |             | `CustomEvent<{ id: string; newName: string; }>` |
+| `renameConfirm`        |             | `CustomEvent<{ id: string; newName: string; }>` |
 
 
 ## Methods
@@ -55,12 +57,14 @@ Type: `Promise<void>`
 
  - [localmind-history](../localmind-history)
  - [localmind-project-view](../localmind-project-view)
+ - [localmind-sidebar](../localmind-sidebar)
 
 ### Graph
 ```mermaid
 graph TD;
   localmind-history --> localmind-rename-modal
   localmind-project-view --> localmind-rename-modal
+  localmind-sidebar --> localmind-rename-modal
   style localmind-rename-modal fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

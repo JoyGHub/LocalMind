@@ -44,6 +44,7 @@ export namespace Components {
         "show": () => Promise<void>;
     }
     interface LocalmindDeleteModal {
+        "entityType": 'conversation' | 'project';
         "hide": () => Promise<void>;
         "open": boolean;
         "show": (id: string, name: string) => Promise<void>;
@@ -129,6 +130,7 @@ export namespace Components {
         "thinkingLevel": ThinkingLevel;
     }
     interface LocalmindRenameModal {
+        "entityType": 'conversation' | 'project';
         "hide": () => Promise<void>;
         "open": boolean;
         "show": (id: string, currentName: string) => Promise<void>;
@@ -328,6 +330,7 @@ declare global {
     };
     interface HTMLLocalmindDeleteModalElementEventMap {
         "deleteConfirm": string;
+        "projectDeleteConfirm": { id: string; deleteChats: boolean };
     }
     interface HTMLLocalmindDeleteModalElement extends Components.LocalmindDeleteModal, HTMLStencilElement {
         addEventListener<K extends keyof HTMLLocalmindDeleteModalElementEventMap>(type: K, listener: (this: HTMLLocalmindDeleteModalElement, ev: LocalmindDeleteModalCustomEvent<HTMLLocalmindDeleteModalElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -565,6 +568,7 @@ declare global {
     };
     interface HTMLLocalmindRenameModalElementEventMap {
         "renameConfirm": { id: string; newName: string };
+        "projectRenameConfirm": { id: string; newName: string };
     }
     interface HTMLLocalmindRenameModalElement extends Components.LocalmindRenameModal, HTMLStencilElement {
         addEventListener<K extends keyof HTMLLocalmindRenameModalElementEventMap>(type: K, listener: (this: HTMLLocalmindRenameModalElement, ev: LocalmindRenameModalCustomEvent<HTMLLocalmindRenameModalElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -743,7 +747,9 @@ declare namespace LocalJSX {
         "open"?: boolean;
     }
     interface LocalmindDeleteModal {
+        "entityType"?: 'conversation' | 'project';
         "onDeleteConfirm"?: (event: LocalmindDeleteModalCustomEvent<string>) => void;
+        "onProjectDeleteConfirm"?: (event: LocalmindDeleteModalCustomEvent<{ id: string; deleteChats: boolean }>) => void;
         "open"?: boolean;
     }
     interface LocalmindHistory {
@@ -833,6 +839,8 @@ declare namespace LocalJSX {
         "thinkingLevel"?: ThinkingLevel;
     }
     interface LocalmindRenameModal {
+        "entityType"?: 'conversation' | 'project';
+        "onProjectRenameConfirm"?: (event: LocalmindRenameModalCustomEvent<{ id: string; newName: string }>) => void;
         "onRenameConfirm"?: (event: LocalmindRenameModalCustomEvent<{ id: string; newName: string }>) => void;
         "open"?: boolean;
     }

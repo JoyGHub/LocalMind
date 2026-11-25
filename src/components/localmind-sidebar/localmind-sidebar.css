@@ -1,6 +1,12 @@
 :host {
   display: block;
   height: 100%;
+  z-index: 1;
+}
+
+.sidebar-layout {
+  height: 100%;
+  position: relative;
 }
 
 .sidebar {
@@ -17,16 +23,21 @@
   user-select: none;
 }
 
-.sidebar-header {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  flex: 0 0 56px;
-  padding: 8px 16px 0;
-  box-sizing: border-box;
+.sidebar-toggle {
+  position: absolute;
+  top: 20px;
+  right: -44px;
+  width: 36px;
+  height: 36px;
 }
 
-.sidebar-header sl-icon-button::part(base) {
+.sidebar-toggle sl-tooltip {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.sidebar-toggle sl-icon-button::part(base) {
   width: 36px;
   height: 36px;
   border-radius: 10px;
@@ -36,7 +47,7 @@
     color 0.18s ease;
 }
 
-.sidebar-header sl-icon-button::part(base):hover {
+.sidebar-toggle sl-icon-button::part(base):hover {
   background: #f2f0f8;
   color: #333333;
 }
@@ -146,10 +157,23 @@ sl-button.new-project-button::part(base) {
   scrollbar-width: none;
 }
 
+.project-row {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  border-radius: 12px;
+}
+
+.project-row:hover,
+.project-row.active {
+  background: #f4f0ff;
+}
+
 .project-item {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex: 1;
   min-width: 0;
   padding: 9px 12px;
   border: 0;
@@ -162,13 +186,31 @@ sl-button.new-project-button::part(base) {
 }
 
 .project-item:hover,
-.project-item.active {
-  background: #f4f0ff;
+.project-row.active .project-item {
   color: #5330df;
 }
 
 .project-item sl-icon {
   flex: 0 0 auto;
+}
+
+.project-row .options-dropdown {
+  flex: 0 0 32px;
+  width: 32px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.project-row:hover .options-dropdown,
+.project-row .options-dropdown:focus-within {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.project-row .options-dropdown sl-icon-button::part(base) {
+  width: 32px;
+  height: 32px;
 }
 
 .project-name {
@@ -192,11 +234,6 @@ sl-button.new-chat-button::part(base) {
 
 .button-label {
   white-space: nowrap;
-}
-
-.sidebar.collapsed .sidebar-header {
-  justify-content: center;
-  padding: 8px 0 0;
 }
 
 .sidebar.collapsed .top {

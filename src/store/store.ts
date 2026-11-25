@@ -139,6 +139,34 @@ export class StoreService {
     await this.loadConversations();
   }
 
+  async renameProject(id: string, newName: string) {
+    await dbService.renameProject(id, newName);
+    await this.loadProjects();
+  }
+
+  async deleteProject(id: string, deleteConversations: boolean = false) {
+    const wasActiveProject = state.activeProjectId === id;
+    const activeConversationId = wasActiveProject ? state.activeConversationId : null;
+
+    await dbService.deleteProject(id, deleteConversations);
+
+    if (state.activeProjectId === id) {
+      this.projectSelectionId++;
+      state.activeProjectId = null;
+      state.projectConversations = [];
+      state.activeProjectSources = [];
+      if (deleteConversations && activeConversationId && state.activeConversationId === activeConversationId) {
+        this.conversationSelectionId++;
+        state.activeConversationId = null;
+        state.activeMessages = [];
+        state.isTemporaryChat = false;
+      }
+    }
+
+    await this.loadProjects();
+    await this.loadConversations();
+  }
+
   async addProjectSource(source: ProjectSource) {
     await dbService.addProjectSource(source);
     if (state.activeProjectId === source.projectId) {

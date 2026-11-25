@@ -37,6 +37,8 @@
 - [localmind-settings](../localmind-settings)
 - [localmind-about-modal](../localmind-about-modal)
 - [localmind-create-project-modal](../localmind-create-project-modal)
+- [localmind-rename-modal](../localmind-rename-modal)
+- [localmind-delete-modal](../localmind-delete-modal)
 
 ### Graph
 ```mermaid
@@ -46,6 +48,8 @@ graph TD;
   localmind-sidebar --> localmind-settings
   localmind-sidebar --> localmind-about-modal
   localmind-sidebar --> localmind-create-project-modal
+  localmind-sidebar --> localmind-rename-modal
+  localmind-sidebar --> localmind-delete-modal
   localmind-history --> localmind-rename-modal
   localmind-history --> localmind-delete-modal
   localmind-history --> localmind-move-to-project-modal
