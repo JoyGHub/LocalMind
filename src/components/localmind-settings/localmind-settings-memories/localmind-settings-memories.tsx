@@ -72,6 +72,13 @@ export class LocalMindSettingsMemories {
 
   async clearMemories() {
     this.error = '';
+
+    const confirmed = window.confirm('Are you sure you want to delete all saved memories? This action cannot be undone.');
+
+    if (!confirmed) {
+      return;
+    }
+
     try {
       await dbService.clearMemories();
       this.memories = [];
@@ -94,7 +101,7 @@ export class LocalMindSettingsMemories {
           </div>
           <sl-switch
             checked={this.saveMemories}
-            ref={(el: HTMLElement & { checked: boolean; }) => (this.saveMemoriesSwitchEl = el as HTMLElement & { checked: boolean })}
+            ref={(el: HTMLElement & { checked: boolean }) => (this.saveMemoriesSwitchEl = el as HTMLElement & { checked: boolean })}
             aria-label={t('memorySaveTitle', locale)}
           ></sl-switch>
         </div>
@@ -106,7 +113,7 @@ export class LocalMindSettingsMemories {
           </div>
           <sl-switch
             checked={this.readMemories}
-            ref={(el: HTMLElement & { checked: boolean; }) => (this.readMemoriesSwitchEl = el as HTMLElement & { checked: boolean })}
+            ref={(el: HTMLElement & { checked: boolean }) => (this.readMemoriesSwitchEl = el as HTMLElement & { checked: boolean })}
             aria-label={t('memoryReadTitle', locale)}
           ></sl-switch>
         </div>
@@ -117,14 +124,15 @@ export class LocalMindSettingsMemories {
               <div class="setting-title">{t('memorySavedTitle', locale)}</div>
               <div class="setting-description">{t('memorySavedDescription', locale)}</div>
             </div>
-            <sl-button
-              variant="danger"
-              size="small"
-              disabled={this.loading || this.memories.length === 0}
-              onClick={() => this.clearMemories()}
-            >{t('memoryClearAllLabel', locale)}</sl-button>
+            <sl-button size="small" disabled={this.loading || this.memories.length === 0} onClick={() => this.clearMemories()}>
+              {t('memoryClearAllLabel', locale)}
+            </sl-button>
           </div>
-          {this.error && <div class="memory-error" role="alert">{this.error}</div>}
+          {this.error && (
+            <div class="memory-error" role="alert">
+              {this.error}
+            </div>
+          )}
           {this.loading ? (
             <div class="memory-empty">{t('memoryLoading', locale)}</div>
           ) : this.memories.length === 0 ? (
@@ -137,12 +145,7 @@ export class LocalMindSettingsMemories {
                     <div class="memory-text">{memory.content}</div>
                     <div class="memory-date">{new Date(memory.createdAt).toLocaleString()}</div>
                   </div>
-                  <sl-icon-button
-                    name="trash"
-                    label={t('memoryDeleteLabel', locale)}
-                    class="memory-delete"
-                    onClick={() => this.deleteMemory(memory)}
-                  ></sl-icon-button>
+                  <sl-icon-button name="trash" label={t('memoryDeleteLabel', locale)} class="memory-delete" onClick={() => this.deleteMemory(memory)}></sl-icon-button>
                 </div>
               ))}
             </div>

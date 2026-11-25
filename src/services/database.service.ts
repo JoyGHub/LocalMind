@@ -111,6 +111,10 @@ export class DatabaseService {
     await db.projectSources.add(source);
   }
 
+  async updateProjectSource(source: ProjectSource): Promise<void> {
+    await db.projectSources.put(source);
+  }
+
   async deleteProjectSource(sourceId: string): Promise<void> {
     await db.projectSources.delete(sourceId);
   }
@@ -119,7 +123,7 @@ export class DatabaseService {
     await db.projects.update(id, { name: newName.trim(), updatedAt: Date.now() });
   }
 
-  async assignConversationToProject(conversationId: string, projectId: string): Promise<void> {
+  async assignConversationToProject(conversationId: string, projectId: string | null): Promise<void> {
     await db.conversations.update(conversationId, { projectId, updatedAt: Date.now() });
   }
 

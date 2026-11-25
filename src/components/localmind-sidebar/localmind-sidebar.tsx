@@ -107,20 +107,17 @@ export class LocalMindSidebar {
             <div class="projects-section">
               <div class="projects-heading">
                 <span class="section-title">Projects</span>
-                <sl-button class="new-project-button" variant="text" onClick={() => this.createProjectModalEl?.show()}>
-                  <sl-icon name="plus" slot="prefix"></sl-icon>
-                  <span class="button-label">New project</span>
-                </sl-button>
               </div>
               <div class="project-list">
+                <div class="project-row">
+                  <button type="button" class="project-item" onClick={() => this.createProjectModalEl?.show()}>
+                    <sl-icon name="plus"></sl-icon>
+                    <span class="project-name">New project</span>
+                  </button>
+                </div>
                 {state.projects.map(project => (
-                  <div class={{ 'project-row': true, active: state.activeProjectId === project.id }} key={project.id}>
-                    <button
-                      type="button"
-                      class="project-item"
-                      onClick={() => this.selectProject(project.id)}
-                      title={project.name}
-                    >
+                  <div class={{ 'project-row': true, 'active': state.activeProjectId === project.id }} key={project.id}>
+                    <button type="button" class="project-item" onClick={() => this.selectProject(project.id)} title={project.name}>
                       <sl-icon name="journal-bookmark"></sl-icon>
                       <span class="project-name">{project.name}</span>
                     </button>

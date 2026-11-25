@@ -42,7 +42,6 @@ graph TD;
   localmind-sidebar --> localmind-delete-modal
   localmind-history --> localmind-rename-modal
   localmind-history --> localmind-delete-modal
-  localmind-history --> localmind-move-to-project-modal
   localmind-settings --> localmind-setting-tab
   localmind-settings --> localmind-settings-general
   localmind-settings --> localmind-settings-model

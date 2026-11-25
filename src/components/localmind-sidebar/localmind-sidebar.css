@@ -129,7 +129,6 @@ sl-button.nav-button sl-icon {
 .projects-heading {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   min-height: 30px;
 }
 
@@ -140,13 +139,6 @@ sl-button.nav-button sl-icon {
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-}
-
-sl-button.new-project-button::part(base) {
-  height: 30px;
-  padding: 0 8px;
-  color: #633cff;
-  font-size: 0.8rem;
 }
 
 .project-list {

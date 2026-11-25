@@ -15,7 +15,6 @@ export class LocalMindHistory {
 
   renameModalEl!: HTMLLocalmindRenameModalElement;
   deleteModalEl!: HTMLLocalmindDeleteModalElement;
-  moveToProjectModalEl!: HTMLLocalmindMoveToProjectModalElement;
 
   @Event({ bubbles: true, composed: true }) projectChangeEvent!: EventEmitter<void>;
 
@@ -53,9 +52,7 @@ export class LocalMindHistory {
     }
   }
 
-  @Listen('moveToProjectConfirm')
-  async handleMoveToProjectConfirm(event: CustomEvent<{ conversationId: string; projectId: string }>) {
-    const { conversationId, projectId } = event.detail;
+  async moveConversationToProject(conversationId: string, projectId: string) {
     try {
       if (state.activeConversationId === conversationId) {
         this.conversationChangeEvent.emit();
@@ -91,14 +88,6 @@ export class LocalMindHistory {
     }
   }
 
-  moveConversationToProject(id: string) {
-    if (state.projects.length === 0) {
-      Alert.error('Create a project before moving a chat.');
-      return;
-    }
-    this.moveToProjectModalEl?.show(id);
-  }
-
   renderMenu(conversation: Conversation) {
     return (
       <sl-dropdown placement="bottom-end" class="options-dropdown" onClick={(e: any) => e.stopPropagation()}>
@@ -108,9 +97,20 @@ export class LocalMindHistory {
             <sl-icon slot="prefix" name="pencil"></sl-icon>
             Rename
           </sl-menu-item>
-          <sl-menu-item onClick={() => this.moveConversationToProject(conversation.id)}>
+          <sl-menu-item>
             <sl-icon slot="prefix" name="folder-plus"></sl-icon>
             Add to project
+            <sl-menu slot="submenu">
+              {state.projects.length ? (
+                state.projects.map(project => (
+                  <sl-menu-item value={project.id} onClick={() => this.moveConversationToProject(conversation.id, project.id)}>
+                    {project.name}
+                  </sl-menu-item>
+                ))
+              ) : (
+                <sl-menu-item disabled>No projects available</sl-menu-item>
+              )}
+            </sl-menu>
           </sl-menu-item>
           <sl-menu-item onClick={() => this.deleteConversation(conversation.id)}>
             <sl-icon slot="prefix" name="trash"></sl-icon>
@@ -149,7 +149,6 @@ export class LocalMindHistory {
 
         <localmind-rename-modal ref={el => (this.renameModalEl = el as HTMLLocalmindRenameModalElement)}></localmind-rename-modal>
         <localmind-delete-modal ref={el => (this.deleteModalEl = el as HTMLLocalmindDeleteModalElement)}></localmind-delete-modal>
-        <localmind-move-to-project-modal ref={el => (this.moveToProjectModalEl = el as HTMLLocalmindMoveToProjectModalElement)}></localmind-move-to-project-modal>
       </div>
     );
   }

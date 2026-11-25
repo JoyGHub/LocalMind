@@ -62,6 +62,17 @@ export class LocalMindProjectView {
     this.deleteModalEl?.show(conversation.id, conversation.name);
   }
 
+  async removeFromProject(conversation: Conversation) {
+    try {
+      if (state.activeConversationId === conversation.id) {
+        this.conversationChangeEvent.emit();
+      }
+      await storeService.assignConversationToProject(conversation.id, null);
+    } catch (error) {
+      Alert.error(`Failed to remove conversation from project: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+
   renderMenu(conversation: Conversation) {
     return (
       <sl-dropdown placement="bottom-end" class="options-dropdown" onClick={(event: Event) => event.stopPropagation()}>
@@ -70,6 +81,10 @@ export class LocalMindProjectView {
           <sl-menu-item onClick={() => this.openRename(conversation)}>
             <sl-icon slot="prefix" name="pencil"></sl-icon>
             Rename
+          </sl-menu-item>
+          <sl-menu-item onClick={() => this.removeFromProject(conversation)}>
+            <sl-icon slot="prefix" name="folder-minus"></sl-icon>
+            Remove from project
           </sl-menu-item>
           <sl-menu-item onClick={() => this.openDelete(conversation)}>
             <sl-icon slot="prefix" name="trash"></sl-icon>
@@ -116,7 +131,7 @@ export class LocalMindProjectView {
             <div class="project-chat-list">
               {state.projectConversations.map(conversation => (
                 <div
-                  class={{ 'project-chat': true, active: conversation.id === state.activeConversationId }}
+                  class={{ 'project-chat': true, 'active': conversation.id === state.activeConversationId }}
                   key={conversation.id}
                   onClick={() => this.loadConversation(conversation.id)}
                 >
@@ -141,9 +156,7 @@ export class LocalMindProjectView {
 
         <localmind-rename-modal ref={element => (this.renameModalEl = element as HTMLLocalmindRenameModalElement)}></localmind-rename-modal>
         <localmind-delete-modal ref={element => (this.deleteModalEl = element as HTMLLocalmindDeleteModalElement)}></localmind-delete-modal>
-        <localmind-project-sources-modal
-          ref={element => (this.sourcesModalEl = element as HTMLLocalmindProjectSourcesModalElement)}
-        ></localmind-project-sources-modal>
+        <localmind-project-sources-modal ref={element => (this.sourcesModalEl = element as HTMLLocalmindProjectSourcesModalElement)}></localmind-project-sources-modal>
       </section>
     );
   }

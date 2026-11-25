@@ -16,6 +16,9 @@ export class LocalMindProjectSourcesModal {
   @Prop({ mutable: true, reflect: true }) open: boolean = false;
 
   @State() isSaving = false;
+  @State() editingSourceId: string | null = null;
+  @State() editedValue = '';
+  @State() isSavingEdit = false;
 
   private fileInput!: HTMLInputElement;
   private entryModalEl!: HTMLLocalmindProjectSourceEntryModalElement;
@@ -29,6 +32,8 @@ export class LocalMindProjectSourcesModal {
   @Method()
   async hide() {
     this.open = false;
+    this.editingSourceId = null;
+    this.editedValue = '';
   }
 
   private handleMouseDown(event: MouseEvent) {
@@ -100,8 +105,52 @@ export class LocalMindProjectSourcesModal {
   private async removeSource(source: ProjectSource) {
     try {
       await storeService.removeProjectSource(source.id);
+      if (this.editingSourceId === source.id) {
+        this.editingSourceId = null;
+      }
     } catch (error) {
       Alert.error(`Failed to remove "${source.title}": ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+
+  private editSource(source: ProjectSource) {
+    this.editingSourceId = source.id;
+    this.editedValue = source.type === 'link' ? (source.url ?? '') : source.content;
+  }
+
+  private updateEditedValue(event: Event) {
+    this.editedValue = (event.currentTarget as HTMLInputElement | HTMLTextAreaElement).value;
+  }
+
+  private async saveSource(source: ProjectSource) {
+    if (this.isSavingEdit) return;
+
+    const value = this.editedValue.trim();
+    if (!value) {
+      Alert.error(source.type === 'link' ? 'Enter a URL.' : 'Enter text to save.');
+      return;
+    }
+
+    this.isSavingEdit = true;
+    try {
+      const updatedSource = { ...source };
+      if (source.type === 'link') {
+        const url = new URL(value);
+        if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+          throw new Error('Only HTTP and HTTPS links can be saved.');
+        }
+        updatedSource.url = value;
+        updatedSource.title = url.hostname;
+      } else {
+        updatedSource.content = value;
+      }
+
+      await storeService.updateProjectSource(updatedSource);
+      this.editingSourceId = null;
+    } catch (error) {
+      Alert.error(`Failed to update source: ${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+      this.isSavingEdit = false;
     }
   }
 
@@ -120,7 +169,7 @@ export class LocalMindProjectSourcesModal {
           </header>
 
           <div class="modal-body">
-            <section class="source-actions" aria-label="Add a source">
+            <section class="add-source-actions" aria-label="Add a source">
               <sl-button class="action-button" onClick={() => this.fileInput.click()} disabled={this.isSaving}>
                 <sl-icon slot="prefix" name="upload"></sl-icon>
                 Upload files
@@ -155,8 +204,21 @@ export class LocalMindProjectSourcesModal {
                       <div class="source-card-header">
                         <sl-icon name={source.type === 'file' ? 'file-earmark-text' : source.type === 'link' ? 'link-45deg' : 'clipboard'}></sl-icon>
                         <div class="source-details">
-                          <div class="source-title" title={source.title}>
-                            {source.title}
+                          <div class="source-title-row">
+                            <div class="source-title" title={source.title}>
+                              {source.title}
+                            </div>
+                            <div class="source-item-actions">
+                              {source.type !== 'file' && (
+                                <sl-icon-button
+                                  name={this.editingSourceId === source.id ? 'floppy' : 'pencil'}
+                                  label={this.editingSourceId === source.id ? `Save ${source.title}` : `Edit ${source.title}`}
+                                  disabled={this.isSavingEdit || (!!this.editingSourceId && this.editingSourceId !== source.id)}
+                                  onClick={() => (this.editingSourceId === source.id ? this.saveSource(source) : this.editSource(source))}
+                                ></sl-icon-button>
+                              )}
+                              <sl-icon-button name="trash" label={`Remove ${source.title}`} disabled={this.isSavingEdit} onClick={() => this.removeSource(source)}></sl-icon-button>
+                            </div>
                           </div>
                           {source.type === 'file' && (
                             <div class="source-metadata">
@@ -164,18 +226,40 @@ export class LocalMindProjectSourcesModal {
                               {source.fileSize !== undefined && <span>{formatBytes(source.fileSize)}</span>}
                             </div>
                           )}
-                          {source.type === 'link' && source.url && (
-                            <a class="source-url" href={source.url} target="_blank" rel="noopener noreferrer" title={source.url}>
-                              {source.url}
-                            </a>
-                          )}
-                          {source.type === 'text' && (
-                            <p class="source-preview" title={source.content}>
-                              {source.content}
-                            </p>
-                          )}
+                          {source.type === 'link' &&
+                            (this.editingSourceId === source.id ? (
+                              <sl-input
+                                class="source-editor"
+                                aria-label="Source URL"
+                                type="url"
+                                value={this.editedValue}
+                                onInput={(event: Event) => this.updateEditedValue(event)}
+                                onSlInput={(event: Event) => this.updateEditedValue(event)}
+                              ></sl-input>
+                            ) : (
+                              source.url && (
+                                <a class="source-url" href={source.url} target="_blank" rel="noopener noreferrer" title={source.url}>
+                                  {source.url}
+                                </a>
+                              )
+                            ))}
+                          {source.type === 'text' &&
+                            (this.editingSourceId === source.id ? (
+                              <sl-textarea
+                                class="source-editor"
+                                aria-label="Source text"
+                                rows={4}
+                                resize="auto"
+                                value={this.editedValue}
+                                onInput={(event: Event) => this.updateEditedValue(event)}
+                                onSlInput={(event: Event) => this.updateEditedValue(event)}
+                              ></sl-textarea>
+                            ) : (
+                              <p class="source-preview" title={source.content}>
+                                {source.content}
+                              </p>
+                            ))}
                         </div>
-                        <sl-icon-button name="trash" label={`Remove ${source.title}`} onClick={() => this.removeSource(source)}></sl-icon-button>
                       </div>
                     </article>
                   ))}

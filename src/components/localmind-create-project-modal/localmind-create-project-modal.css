@@ -1,43 +1,136 @@
 .backdrop {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(15, 15, 20, 0.5);
+  backdrop-filter: blur(3px);
   display: flex;
-  align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  z-index: 1000;
 }
 
 .modal-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  width: calc(100% - 32px);
+  max-width: 480px;
+  padding: 24px;
   box-sizing: border-box;
-  width: 100%;
-  max-width: 450px;
-  padding: var(--sl-spacing-large, 20px);
-  border-radius: var(--sl-border-radius-medium, 8px);
-  background: #fff;
-  box-shadow: var(--sl-shadow-large, 0 10px 25px rgba(0, 0, 0, 0.15));
   user-select: none;
 }
 
 .modal-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--sl-spacing-medium);
+  align-items: center;
 }
 
 .modal-header h3 {
   margin: 0;
-  color: var(--sl-color-neutral-800);
-  font-size: var(--sl-font-size-large);
+  font-size: 20px;
+  font-weight: 650;
+  letter-spacing: -0.3px;
+  line-height: 1.3;
+  color: #24232b;
+}
+
+.modal-header sl-icon-button {
+  font-size: 18px;
+  color: #777481;
+}
+
+.modal-header sl-icon-button::part(base) {
+  border-radius: 8px;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.modal-header sl-icon-button:hover::part(base) {
+  background-color: #f2f0f7;
+  color: #24232b;
 }
 
 .modal-body {
-  margin-bottom: var(--sl-spacing-large);
+  margin-bottom: 24px;
+  color: #55535e;
+}
+
+.modal-description {
+  margin: 0 0 16px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #777481;
+}
+
+.modal-body sl-input {
+  width: 100%;
+  --sl-input-height-medium: 44px;
+  --sl-input-border-radius-medium: 8px;
+}
+
+.modal-body sl-input::part(base) {
+  background: #ffffff;
+  border: 1px solid #d9d6e1;
+  border-radius: 8px;
+  box-shadow: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.modal-body sl-input:hover::part(base) {
+  border-color: #b8b2c9;
+}
+
+.modal-body sl-input:focus-within::part(base) {
+  border-color: #633cff;
+  box-shadow: 0 0 0 3px rgba(99, 60, 255, 0.15);
+}
+
+.modal-body sl-input::part(input) {
+  font-size: 14px;
+  color: #24232b;
 }
 
 .modal-footer {
   display: flex;
   justify-content: flex-end;
-  gap: var(--sl-spacing-small);
+}
+
+.modal-footer sl-button::part(base) {
+  min-height: 40px;
+  padding: 0 18px;
+  background: #633cff;
+  border: 1px solid #633cff;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.modal-footer sl-button:hover::part(base) {
+  background: #5630e8;
+  border-color: #5630e8;
+}
+
+.modal-footer sl-button:active::part(base) {
+  background: #4b28d6;
+  border-color: #4b28d6;
+}
+
+.modal-footer sl-button:focus-visible::part(base) {
+  box-shadow: 0 0 0 3px rgba(99, 60, 255, 0.2);
+}
+
+.modal-footer sl-button[disabled]::part(base) {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

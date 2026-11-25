@@ -37,6 +37,7 @@ export class LocalMindDeleteModal {
 
   handleMouseDown(e: MouseEvent) {
     const target = e.target as HTMLElement;
+
     if (target.classList.contains('backdrop')) {
       this.isMouseDownOnBackdrop = true;
     } else {
@@ -46,24 +47,38 @@ export class LocalMindDeleteModal {
 
   handleMouseUp(e: MouseEvent) {
     const target = e.target as HTMLElement;
+
     if (this.isMouseDownOnBackdrop && target.classList.contains('backdrop')) {
       this.hide();
     }
+
     this.isMouseDownOnBackdrop = false;
+  }
+
+  handleKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.hide();
+    }
   }
 
   confirmDelete() {
     if (this.entityType === 'project') {
-      this.projectDeleteConfirm.emit({ id: this.conversationId, deleteChats: this.deleteChats });
+      this.projectDeleteConfirm.emit({
+        id: this.conversationId,
+        deleteChats: this.deleteChats,
+      });
     } else {
       this.deleteConfirm.emit(this.conversationId);
     }
+
     this.hide();
   }
 
   handleDeleteChatsChange(event: CustomEvent) {
-    const target = event.target;
-    if (target && 'checked' in target && typeof target.checked === 'boolean') {
+    const target = event.target as HTMLElement & { checked?: boolean };
+
+    if (typeof target.checked === 'boolean') {
       this.deleteChats = target.checked;
     }
   }
@@ -71,32 +86,30 @@ export class LocalMindDeleteModal {
   render() {
     if (!this.open) return null;
 
+    const entityName = this.entityType === 'project' ? 'Project' : 'Conversation';
+
     return (
       <div class="backdrop" onMouseDown={e => this.handleMouseDown(e)} onMouseUp={e => this.handleMouseUp(e)}>
-        <div class="modal-card">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title" onKeyDown={e => this.handleKeyDown(e)}>
           <div class="modal-header">
-            <h3>Delete {this.entityType === 'project' ? 'Project' : 'Conversation'}</h3>
-            <sl-icon-button name="x-lg" label="Close" onClick={() => this.hide()}></sl-icon-button>
+            <h3 id="modal-title">Delete {entityName}</h3>
+
+            <sl-icon-button name="x-lg" label="Close" onClick={() => this.hide()} />
           </div>
 
           <div class="modal-body">
-            <p>
+            <p class="modal-description">
               Are you sure you want to delete the {this.entityType} <strong>"{this.conversationName}"</strong>? This action cannot be undone.
             </p>
+
             {this.entityType === 'project' && (
-              <sl-checkbox
-                checked={this.deleteChats}
-                onSlChange={(event: CustomEvent) => this.handleDeleteChatsChange(event)}
-              >
+              <sl-checkbox checked={this.deleteChats} onSlChange={(event: CustomEvent) => this.handleDeleteChatsChange(event)}>
                 Delete all chats in this project
               </sl-checkbox>
             )}
           </div>
 
           <div class="modal-footer">
-            <sl-button variant="default" onClick={() => this.hide()}>
-              Cancel
-            </sl-button>
             <sl-button variant="danger" onClick={() => this.confirmDelete()}>
               Delete
             </sl-button>

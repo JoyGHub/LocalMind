@@ -102,11 +102,6 @@ export namespace Components {
         "open": boolean;
         "show": () => Promise<void>;
     }
-    interface LocalmindMoveToProjectModal {
-        "hide": () => Promise<void>;
-        "open": boolean;
-        "show": (conversationId: string) => Promise<void>;
-    }
     interface LocalmindOllamaStatus {
         "ollamaRunning": boolean;
     }
@@ -231,10 +226,6 @@ export interface LocalmindModelTableCustomEvent<T> extends CustomEvent<T> {
 export interface LocalmindModelsCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLLocalmindModelsElement;
-}
-export interface LocalmindMoveToProjectModalCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLLocalmindMoveToProjectModalElement;
 }
 export interface LocalmindProjectViewCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -514,23 +505,6 @@ declare global {
         prototype: HTMLLocalmindModelsElement;
         new (): HTMLLocalmindModelsElement;
     };
-    interface HTMLLocalmindMoveToProjectModalElementEventMap {
-        "moveToProjectConfirm": { conversationId: string; projectId: string };
-    }
-    interface HTMLLocalmindMoveToProjectModalElement extends Components.LocalmindMoveToProjectModal, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLLocalmindMoveToProjectModalElementEventMap>(type: K, listener: (this: HTMLLocalmindMoveToProjectModalElement, ev: LocalmindMoveToProjectModalCustomEvent<HTMLLocalmindMoveToProjectModalElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLLocalmindMoveToProjectModalElementEventMap>(type: K, listener: (this: HTMLLocalmindMoveToProjectModalElement, ev: LocalmindMoveToProjectModalCustomEvent<HTMLLocalmindMoveToProjectModalElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-    }
-    var HTMLLocalmindMoveToProjectModalElement: {
-        prototype: HTMLLocalmindMoveToProjectModalElement;
-        new (): HTMLLocalmindMoveToProjectModalElement;
-    };
     interface HTMLLocalmindOllamaStatusElement extends Components.LocalmindOllamaStatus, HTMLStencilElement {
     }
     var HTMLLocalmindOllamaStatusElement: {
@@ -691,7 +665,6 @@ declare global {
         "localmind-model-overview": HTMLLocalmindModelOverviewElement;
         "localmind-model-table": HTMLLocalmindModelTableElement;
         "localmind-models": HTMLLocalmindModelsElement;
-        "localmind-move-to-project-modal": HTMLLocalmindMoveToProjectModalElement;
         "localmind-ollama-status": HTMLLocalmindOllamaStatusElement;
         "localmind-project-source-entry-modal": HTMLLocalmindProjectSourceEntryModalElement;
         "localmind-project-sources-modal": HTMLLocalmindProjectSourcesModalElement;
@@ -815,10 +788,6 @@ declare namespace LocalJSX {
         "onModelsUpdatedEvent"?: (event: LocalmindModelsCustomEvent<any>) => void;
         "open"?: boolean;
     }
-    interface LocalmindMoveToProjectModal {
-        "onMoveToProjectConfirm"?: (event: LocalmindMoveToProjectModalCustomEvent<{ conversationId: string; projectId: string }>) => void;
-        "open"?: boolean;
-    }
     interface LocalmindOllamaStatus {
         "ollamaRunning": boolean;
     }
@@ -911,7 +880,6 @@ declare namespace LocalJSX {
         "localmind-model-overview": LocalmindModelOverview;
         "localmind-model-table": LocalmindModelTable;
         "localmind-models": LocalmindModels;
-        "localmind-move-to-project-modal": LocalmindMoveToProjectModal;
         "localmind-ollama-status": LocalmindOllamaStatus;
         "localmind-project-source-entry-modal": LocalmindProjectSourceEntryModal;
         "localmind-project-sources-modal": LocalmindProjectSourcesModal;
@@ -955,7 +923,6 @@ declare module "@stencil/core" {
             "localmind-model-overview": LocalJSX.LocalmindModelOverview & JSXBase.HTMLAttributes<HTMLLocalmindModelOverviewElement>;
             "localmind-model-table": LocalJSX.LocalmindModelTable & JSXBase.HTMLAttributes<HTMLLocalmindModelTableElement>;
             "localmind-models": LocalJSX.LocalmindModels & JSXBase.HTMLAttributes<HTMLLocalmindModelsElement>;
-            "localmind-move-to-project-modal": LocalJSX.LocalmindMoveToProjectModal & JSXBase.HTMLAttributes<HTMLLocalmindMoveToProjectModalElement>;
             "localmind-ollama-status": LocalJSX.LocalmindOllamaStatus & JSXBase.HTMLAttributes<HTMLLocalmindOllamaStatusElement>;
             "localmind-project-source-entry-modal": LocalJSX.LocalmindProjectSourceEntryModal & JSXBase.HTMLAttributes<HTMLLocalmindProjectSourceEntryModalElement>;
             "localmind-project-sources-modal": LocalJSX.LocalmindProjectSourcesModal & JSXBase.HTMLAttributes<HTMLLocalmindProjectSourcesModalElement>;

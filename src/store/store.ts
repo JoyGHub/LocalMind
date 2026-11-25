@@ -62,7 +62,7 @@ export class StoreService {
     return project;
   }
 
-  async assignConversationToProject(conversationId: string, projectId: string) {
+  async assignConversationToProject(conversationId: string, projectId: string | null) {
     await dbService.assignConversationToProject(conversationId, projectId);
     await this.loadConversations();
     if (state.activeConversationId === conversationId) {
@@ -70,14 +70,18 @@ export class StoreService {
       state.activeProjectId = projectId;
       state.projectConversations = [];
       state.activeProjectSources = [];
-      const [conversations, sources] = await Promise.all([
-        dbService.getProjectConversations(projectId),
-        dbService.getProjectSources(projectId),
-      ]);
-      if (selectionId === this.projectSelectionId && state.activeProjectId === projectId) {
-        state.projectConversations = conversations;
-        state.activeProjectSources = sources;
+      if (projectId) {
+        const [conversations, sources] = await Promise.all([
+          dbService.getProjectConversations(projectId),
+          dbService.getProjectSources(projectId),
+        ]);
+        if (selectionId === this.projectSelectionId && state.activeProjectId === projectId) {
+          state.projectConversations = conversations;
+          state.activeProjectSources = sources;
+        }
       }
+    } else if (state.activeProjectId) {
+      await this.loadProjectConversations(state.activeProjectId);
     }
   }
 
@@ -171,6 +175,13 @@ export class StoreService {
     await dbService.addProjectSource(source);
     if (state.activeProjectId === source.projectId) {
       state.activeProjectSources = [...state.activeProjectSources, source].sort((a, b) => a.createdAt - b.createdAt);
+    }
+  }
+
+  async updateProjectSource(source: ProjectSource) {
+    await dbService.updateProjectSource(source);
+    if (state.activeProjectId === source.projectId) {
+      state.activeProjectSources = state.activeProjectSources.map(existing => (existing.id === source.id ? source : existing));
     }
   }
 

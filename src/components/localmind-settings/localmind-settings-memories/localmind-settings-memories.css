@@ -94,6 +94,15 @@
 .memory-delete {
   flex: 0 0 auto;
   color: #6b7280;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.memory-row:hover .memory-delete,
+.memory-row:focus-within .memory-delete {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .memory-delete:hover {

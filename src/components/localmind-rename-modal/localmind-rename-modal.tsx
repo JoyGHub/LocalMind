@@ -1,5 +1,7 @@
 import { Component, h, Prop, State, Method, Event, EventEmitter } from '@stencil/core';
 
+type TextInputElement = HTMLElement & { value: string };
+
 @Component({
   tag: 'localmind-rename-modal',
   styleUrl: 'localmind-rename-modal.css',
@@ -17,6 +19,27 @@ export class LocalMindRenameModal {
   @Event({ bubbles: true, composed: true }) projectRenameConfirm!: EventEmitter<{ id: string; newName: string }>;
 
   isMouseDownOnBackdrop: boolean = false;
+  nameInputEl?: TextInputElement;
+
+  handleNameInput = () => {
+    this.newName = this.nameInputEl?.value ?? '';
+  };
+
+  bindNameInputElement(element: HTMLElement | undefined) {
+    if (this.nameInputEl === element) return;
+
+    this.nameInputEl?.removeEventListener('sl-input', this.handleNameInput);
+    this.nameInputEl = element as TextInputElement | undefined;
+    this.nameInputEl?.addEventListener('sl-input', this.handleNameInput);
+  }
+
+  connectedCallback() {
+    this.nameInputEl?.addEventListener('sl-input', this.handleNameInput);
+  }
+
+  disconnectedCallback() {
+    this.nameInputEl?.removeEventListener('sl-input', this.handleNameInput);
+  }
 
   @Method()
   async show(id: string, currentName: string) {
@@ -34,6 +57,7 @@ export class LocalMindRenameModal {
 
   handleMouseDown(e: MouseEvent) {
     const target = e.target as HTMLElement;
+
     if (target.classList.contains('backdrop')) {
       this.isMouseDownOnBackdrop = true;
     } else {
@@ -43,31 +67,42 @@ export class LocalMindRenameModal {
 
   handleMouseUp(e: MouseEvent) {
     const target = e.target as HTMLElement;
+
     if (this.isMouseDownOnBackdrop && target.classList.contains('backdrop')) {
       this.hide();
     }
-    this.isMouseDownOnBackdrop = false;
-  }
 
-  handleInput(event: InputEvent) {
-    const target = event.target as HTMLInputElement;
-    this.newName = target.value;
+    this.isMouseDownOnBackdrop = false;
   }
 
   handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter') {
+      event.preventDefault();
       this.saveRename();
+    }
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.hide();
     }
   }
 
   saveRename() {
     const trimmedName = this.newName.trim();
+
     if (trimmedName !== '') {
       if (this.entityType === 'project') {
-        this.projectRenameConfirm.emit({ id: this.conversationId, newName: trimmedName });
+        this.projectRenameConfirm.emit({
+          id: this.conversationId,
+          newName: trimmedName,
+        });
       } else {
-        this.renameConfirm.emit({ id: this.conversationId, newName: trimmedName });
+        this.renameConfirm.emit({
+          id: this.conversationId,
+          newName: trimmedName,
+        });
       }
+
       this.hide();
     }
   }
@@ -75,22 +110,29 @@ export class LocalMindRenameModal {
   render() {
     if (!this.open) return null;
 
+    const entityName = this.entityType === 'project' ? 'Project' : 'Conversation';
+
     return (
       <div class="backdrop" onMouseDown={e => this.handleMouseDown(e)} onMouseUp={e => this.handleMouseUp(e)}>
-        <div class="modal-card">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
           <div class="modal-header">
-            <h3>Rename {this.entityType === 'project' ? 'Project' : 'Conversation'}</h3>
-            <sl-icon-button name="x-lg" label="Close" onClick={() => this.hide()}></sl-icon-button>
+            <h3 id="modal-title">Rename {entityName}</h3>
+
+            <sl-icon-button name="x-lg" label="Close" onClick={() => this.hide()} />
           </div>
 
           <div class="modal-body">
-            <sl-input value={this.newName} onKeyDown={(e: KeyboardEvent) => this.handleKeyDown(e)} onInput={(e: InputEvent) => this.handleInput(e)} autofocus></sl-input>
+            <p class="modal-description">Choose a new name for this {this.entityType}.</p>
+
+            <sl-input
+              value={this.newName}
+              ref={(element: HTMLElement | undefined) => this.bindNameInputElement(element as HTMLElement | undefined)}
+              onKeyDown={(e: KeyboardEvent) => this.handleKeyDown(e)}
+              autofocus
+            />
           </div>
 
           <div class="modal-footer">
-            <sl-button variant="default" onClick={() => this.hide()}>
-              Cancel
-            </sl-button>
             <sl-button variant="primary" onClick={() => this.saveRename()} disabled={this.newName.trim() === ''}>
               Rename
             </sl-button>
