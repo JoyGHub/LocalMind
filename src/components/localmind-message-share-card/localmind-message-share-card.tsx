@@ -91,8 +91,8 @@ export class LocalMindMessageShareCard {
     const shareUrl = this.getShareUrl();
 
     return (
-      <div class="backdrop" onMouseDown={e => this.handleBackdropMouseDown(e)} onClick={e => this.handleBackdropClick(e)}>
-        <div class="modal-card">
+      <div class="backdrop modal-backdrop-enter" onMouseDown={e => this.handleBackdropMouseDown(e)} onClick={e => this.handleBackdropClick(e)}>
+        <div class="modal-card modal-surface-enter">
           <div class="modal-header">
             <div>
               <div class="eyebrow">Share response</div>

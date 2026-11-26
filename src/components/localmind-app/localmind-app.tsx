@@ -3,6 +3,7 @@ import { bytesToGbMb } from '../../utils/utils';
 import { ollamaService } from '../../services/ollama.service';
 import { Alert } from '../../services/alert.service';
 import { Message, OllamaModel, ThinkingLevel } from '../../types/interfaces';
+import { appendMessagePart, getMessageParts } from '../../utils/message-parts';
 import { attachmentService } from '../../services/attachment.service';
 import state, { storeService } from '../../store/store';
 import { NotificationService } from '../../services/notification.service';
@@ -329,6 +330,18 @@ export class LocalMindApp {
       if (message.role === 'assistant' && message.workflowId) {
         const groupedMessage = displayMessages.find(item => item.workflowId === message.workflowId);
         if (groupedMessage) {
+          let groupedParts = getMessageParts(groupedMessage);
+          const incomingParts = getMessageParts(message);
+          const previousPart = groupedParts[groupedParts.length - 1];
+          const incomingPart = incomingParts[0];
+          if (
+            previousPart &&
+            incomingPart &&
+            (previousPart.type === 'text' || previousPart.type === 'thinking') &&
+            previousPart.type === incomingPart.type
+          ) {
+            groupedParts = appendMessagePart(groupedParts, { type: previousPart.type, content: '\n\n' });
+          }
           if (message.content) {
             groupedMessage.content += groupedMessage.content ? `\n\n${message.content}` : message.content;
           }
@@ -338,6 +351,7 @@ export class LocalMindApp {
           if (message.tool_calls?.length) {
             groupedMessage.tool_calls = [...(groupedMessage.tool_calls ?? []), ...message.tool_calls];
           }
+          groupedMessage.parts = incomingParts.reduce((parts, part) => appendMessagePart(parts, part), groupedParts);
           if (message.generationStats) {
             groupedMessage.generationStats = message.generationStats;
           }
@@ -349,7 +363,7 @@ export class LocalMindApp {
         }
       }
 
-      if (message.content.trim() !== '' || message.thinking || message.attachment || (message.tool_calls && message.tool_calls.length > 0) || (message.attachedFiles && message.attachedFiles.length > 0)) {
+      if (message.content.trim() !== '' || message.thinking || message.parts?.length || message.attachment || (message.tool_calls && message.tool_calls.length > 0) || (message.attachedFiles && message.attachedFiles.length > 0)) {
         displayMessages.push({ ...message });
       }
     }

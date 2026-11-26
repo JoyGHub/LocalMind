@@ -1,6 +1,7 @@
 import Dexie, { Table } from 'dexie';
 import { AppSetting, Conversation, Memory, Message, Project, ProjectSource } from '../types/interfaces';
 import type { MapWidgetData } from '../utils/utility';
+import { appendMessagePart, getMessageParts } from '../utils/message-parts';
 
 export class LocalMindDB extends Dexie {
   conversations!: Table<Conversation, string>;
@@ -153,6 +154,7 @@ export class DatabaseService {
       const updatedMessage = {
         ...message,
         mapWidgets: [...(message.mapWidgets ?? []), mapData],
+        parts: appendMessagePart(getMessageParts(message), { type: 'map', mapData }),
       };
       await db.messages.put(updatedMessage);
       return updatedMessage;

@@ -113,8 +113,8 @@ export class LocalMindRenameModal {
     const entityName = this.entityType === 'project' ? 'Project' : 'Conversation';
 
     return (
-      <div class="backdrop" onMouseDown={e => this.handleMouseDown(e)} onMouseUp={e => this.handleMouseUp(e)}>
-        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="backdrop modal-backdrop-enter" onMouseDown={e => this.handleMouseDown(e)} onMouseUp={e => this.handleMouseUp(e)}>
+        <div class="modal-card modal-surface-enter" role="dialog" aria-modal="true" aria-labelledby="modal-title">
           <div class="modal-header">
             <h3 id="modal-title">Rename {entityName}</h3>
 

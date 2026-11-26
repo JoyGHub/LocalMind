@@ -236,8 +236,8 @@ export class LocalMindListenCard {
     if (!this.open) return null;
 
     return (
-      <div class="backdrop" onMouseDown={e => this.handleMouseDown(e)} onMouseUp={e => this.handleMouseUp(e)}>
-        <div class="modal-card">
+      <div class="backdrop modal-backdrop-enter" onMouseDown={e => this.handleMouseDown(e)} onMouseUp={e => this.handleMouseUp(e)}>
+        <div class="modal-card modal-surface-enter">
           <div class="modal-header">
             <div>
               <div class="eyebrow">Audio player</div>

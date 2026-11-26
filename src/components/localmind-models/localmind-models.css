@@ -1,3 +1,5 @@
+@import '../../global/modal-animations.css';
+
 :host {
   --border-color: #f0f0f0;
   --text-main: #1a1a1a;
@@ -39,6 +41,7 @@
     system-ui,
     -apple-system,
     sans-serif;
+  transform-origin: center;
 }
 
 .card-content {

@@ -92,6 +92,19 @@ export class LocalMindSidebar {
       <div class="sidebar-layout">
         <aside class={{ sidebar: true, collapsed: this.collapsed }}>
           <div class="top">
+            <div class="brand-row">
+              <div class="brand">
+                <sl-icon name="gpu-card"></sl-icon>
+                <span class="brand-name">LocalMind</span>
+              </div>
+              <sl-icon-button
+                class="sidebar-toggle"
+                name={this.collapsed ? 'chevron-bar-right' : 'chevron-bar-left'}
+                label={this.collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                onClick={() => this.sidebarToggleEvent.emit()}
+              ></sl-icon-button>
+            </div>
+
             <div class="new-chat-row">
               <sl-button class="new-chat-button" onClick={() => this.startNewChat()} aria-label="New chat">
                 <sl-icon name="stars" slot="prefix"></sl-icon>
@@ -102,6 +115,7 @@ export class LocalMindSidebar {
             <sl-button class="models-button" onClick={() => this.sendModelsCardEvent()} aria-label="Models Manager">
               <sl-icon name="box" slot="prefix"></sl-icon>
               <span class="button-label">Models Manager</span>
+              {!this.collapsed && <sl-icon name="chevron-right" slot="suffix" aria-hidden="true"></sl-icon>}
             </sl-button>
 
             <div class="projects-section">
@@ -162,13 +176,6 @@ export class LocalMindSidebar {
           <localmind-rename-modal entityType="project" ref={el => (this.renameModalEl = el as HTMLLocalmindRenameModalElement)}></localmind-rename-modal>
           <localmind-delete-modal entityType="project" ref={el => (this.deleteModalEl = el as HTMLLocalmindDeleteModalElement)}></localmind-delete-modal>
         </aside>
-        <div class="sidebar-toggle">
-          <sl-icon-button
-            name={this.collapsed ? 'chevron-bar-right' : 'chevron-bar-left'}
-            label={this.collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            onClick={() => this.sidebarToggleEvent.emit()}
-          ></sl-icon-button>
-        </div>
       </div>
     );
   }

@@ -3,6 +3,7 @@ import { dbService } from '../services/database.service';
 import { LocalMindState, Message, ProjectSource } from '../types/interfaces';
 import { nanoid } from 'nanoid';
 import type { MapWidgetData } from '../utils/utility';
+import { appendMessagePart, getMessageParts } from '../utils/message-parts';
 
 const { state } = createStore<LocalMindState>({
   conversations: [],
@@ -229,7 +230,7 @@ export class StoreService {
   async appendMapWidgetToMessage(messageId: string, mapData: MapWidgetData): Promise<void> {
     const persistedMessage = await dbService.appendMapWidgetToMessage(messageId, mapData);
     if (persistedMessage) {
-      this.updateMessageInUI(messageId, { mapWidgets: persistedMessage.mapWidgets });
+      this.updateMessageInUI(messageId, { mapWidgets: persistedMessage.mapWidgets, parts: persistedMessage.parts });
       return;
     }
 
@@ -238,7 +239,10 @@ export class StoreService {
       throw new Error('Could not find the assistant message for the map results.');
     }
 
-    this.updateMessageInUI(messageId, { mapWidgets: [...(activeMessage.mapWidgets ?? []), mapData] });
+    this.updateMessageInUI(messageId, {
+      mapWidgets: [...(activeMessage.mapWidgets ?? []), mapData],
+      parts: appendMessagePart(getMessageParts(activeMessage), { type: 'map', mapData }),
+    });
   }
 
   removeMessageFromUI(id: string) {

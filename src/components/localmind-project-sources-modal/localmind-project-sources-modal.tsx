@@ -158,8 +158,8 @@ export class LocalMindProjectSourcesModal {
     if (!this.open) return null;
 
     return (
-      <div class="backdrop" onMouseDown={event => this.handleMouseDown(event)} onMouseUp={event => this.handleMouseUp(event)}>
-        <div class="modal-card">
+      <div class="backdrop modal-backdrop-enter" onMouseDown={event => this.handleMouseDown(event)} onMouseUp={event => this.handleMouseUp(event)}>
+        <div class="modal-card modal-surface-enter">
           <header class="modal-header">
             <div>
               <h2>Sources</h2>

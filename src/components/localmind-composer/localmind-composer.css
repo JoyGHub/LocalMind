@@ -10,6 +10,7 @@
   transition:
     bottom 0.3s ease-in-out,
     transform 0.3s ease-in-out;
+  user-select: none;
 }
 
 .wrapper.at-bottom {

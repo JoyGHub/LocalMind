@@ -1,6 +1,7 @@
 import { Component, Element, h, Prop, State } from '@stencil/core';
-import { Message } from '../../types/interfaces';
+import { Message, MessagePart } from '../../types/interfaces';
 import { MarkdownService } from '../../services/markdown.service';
+import { getMessageParts } from '../../utils/message-parts';
 
 @Component({
   tag: 'localmind-message',
@@ -18,13 +19,15 @@ export class LocalMindMessage {
   previousResponseText: string | null = null;
 
   componentDidRender() {
-    const content = this.el.shadowRoot?.querySelector('.assistant-response-content');
-    if (!content) return;
+    const contentElements = this.el.shadowRoot?.querySelectorAll('.assistant-response-content');
+    if (!contentElements?.length) return;
 
-    const currentText = content.textContent || '';
+    const currentText = Array.from(contentElements).map(content => content.textContent || '').join('');
     if (this.previousResponseText === null) {
       this.previousResponseText = currentText;
-      if (this.isWritingAnswer && this.isLastMessage) this.animateTextFrom(content, 0);
+      if (this.isWritingAnswer && this.isLastMessage) {
+        contentElements.forEach(content => this.animateTextFrom(content, 0));
+      }
       return;
     }
 
@@ -38,7 +41,11 @@ export class LocalMindMessage {
 
     this.previousResponseText = currentText;
     if (this.isWritingAnswer && this.isLastMessage && sharedPrefixLength < currentText.length) {
-      this.animateTextFrom(content, sharedPrefixLength);
+      let offset = 0;
+      contentElements.forEach(content => {
+        this.animateTextFrom(content, Math.max(0, sharedPrefixLength - offset));
+        offset += content.textContent?.length ?? 0;
+      });
     }
   }
 
@@ -83,8 +90,38 @@ export class LocalMindMessage {
     }
   }
 
+  renderPart(part: MessagePart, index: number) {
+    switch (part.type) {
+      case 'thinking':
+        return (
+          <sl-details key={index} summary="Thinking Process" class="thinking-block">
+            {part.content}
+          </sl-details>
+        );
+      case 'text':
+        return <div key={index} class="assistant-response-content" innerHTML={MarkdownService.render(part.content)}></div>;
+      case 'tool_call':
+        return part.call.function.name === 'execute_code' ? (
+          <sl-details key={index} class="code-execution" summary={`Run ${String(part.call.function.arguments.language || 'code')}`}>
+            <pre><code>{String(part.call.function.arguments.code || '')}</code></pre>
+          </sl-details>
+        ) : (
+          <div key={index} class="tool-indicator">Using tool: {part.call.function.name}...</div>
+        );
+      case 'map':
+        return (
+          <div key={index} class="map-widgets">
+            <localmind-map mapData={part.mapData}></localmind-map>
+          </div>
+        );
+    }
+  }
+
   render() {
+    if (!this.message) return null;
+
     const executionResult = this.getCodeExecutionResult();
+    const messageParts = getMessageParts(this.message);
     return (
       <div
         class={{
@@ -96,29 +133,10 @@ export class LocalMindMessage {
         onMouseLeave={() => (this.isHovered = false)}
         id={this.message.id}
       >
-        {/* Thinking Block */}
-        {this.message.thinking && (
-          <sl-details summary="Thinking Process" class="thinking-block">
-            {this.message.thinking}
-          </sl-details>
-        )}
-
-        {/* Tool Execution Indicator */}
-        {this.message.tool_calls?.map((call, index) =>
-          call.function.name === 'execute_code' ? (
-            <sl-details class="code-execution" summary={`Run ${String(call.function.arguments.language || 'code')}`}>
-              <pre><code>{String(call.function.arguments.code || '')}</code></pre>
-            </sl-details>
-          ) : !this.message.content && !this.message.thinking && index === 0 ? (
-            <div class="tool-indicator">Using tool: {call.function.name}...</div>
-          ) : null,
-        )}
-
-        {/* Main Content */}
         {this.message.role === 'user' ? (
           this.message.content.trim() !== '' && <p>{this.message.content}</p>
         ) : (
-          this.message.content && <div class="assistant-response-content" innerHTML={MarkdownService.render(this.message.content)}></div>
+          messageParts.map((part, index) => this.renderPart(part, index))
         )}
 
         {executionResult && (
@@ -147,14 +165,6 @@ export class LocalMindMessage {
                 : `Exit code: ${executionResult.exit_code === null ? 'timed out' : executionResult.exit_code}`}
             </p>
           </sl-details>
-        )}
-
-        {this.message.role === 'assistant' && (
-          <div class="map-widgets">
-            {(this.message.mapWidgets ?? []).map((mapData, index) => (
-              <localmind-map key={index} mapData={mapData}></localmind-map>
-            ))}
-          </div>
         )}
 
         {/* User Attached Files (Read-Only) */}

@@ -165,8 +165,8 @@ export class LocalMindSettings {
     if (!this.open) return null;
 
     return (
-      <div class="backdrop" onClick={e => this.handleBackdropClick(e)}>
-        <div class="settings-card">
+      <div class="backdrop modal-backdrop-enter" onClick={e => this.handleBackdropClick(e)}>
+        <div class="settings-card modal-surface-enter">
           {this.renderHeader()}
           <div class="layout-body">
             {this.renderSidebar()}

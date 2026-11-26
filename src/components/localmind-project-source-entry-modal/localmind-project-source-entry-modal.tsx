@@ -175,8 +175,8 @@ export class LocalMindProjectSourceEntryModal {
     const isLink = this.mode === 'link';
 
     return (
-      <div class="backdrop" onMouseDown={event => this.handleMouseDown(event)} onMouseUp={event => this.handleMouseUp(event)}>
-        <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title" onKeyDown={event => this.handleKeyDown(event)}>
+      <div class="backdrop modal-backdrop-enter" onMouseDown={event => this.handleMouseDown(event)} onMouseUp={event => this.handleMouseUp(event)}>
+        <section class="modal-card modal-surface-enter" role="dialog" aria-modal="true" aria-labelledby="modal-title" onKeyDown={event => this.handleKeyDown(event)}>
           <header class="modal-header">
             <div>
               <h2 id="modal-title">{isLink ? 'Add link' : 'Add text'}</h2>

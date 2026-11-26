@@ -16,7 +16,7 @@ export class LocalmindModelDeleteDialog {
     if (!this.modelName) return null;
 
     return (
-      <div class="confirmation-dialog-wrapper">
+      <div class="confirmation-dialog-wrapper modal-surface-enter">
         <div class="confirmation-dialog-header">Confirm Deletion</div>
         <div class="confirmation-dialog">
           <p>

@@ -168,8 +168,8 @@ export class LocalMindModels {
     if (!this.open) return null;
 
     return (
-      <div class="backdrop" onClick={event => this.handleBackdropClick(event)}>
-        <div class="card">
+      <div class="backdrop modal-backdrop-enter" onClick={event => this.handleBackdropClick(event)}>
+        <div class="card modal-surface-enter">
           <div class="card-content">
             <localmind-model-overview models={this.models} onCloseEvent={() => this.hide()} />
             <localmind-model-table

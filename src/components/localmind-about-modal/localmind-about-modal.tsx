@@ -36,8 +36,8 @@ export class LocalmindAboutModal {
     if (!this.open) return null;
 
     return (
-      <div class="backdrop" onMouseDown={event => this.handleMouseDown(event)} onMouseUp={event => this.handleMouseUp(event)}>
-        <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="about-title">
+      <div class="backdrop modal-backdrop-enter" onMouseDown={event => this.handleMouseDown(event)} onMouseUp={event => this.handleMouseUp(event)}>
+        <section class="modal-card modal-surface-enter" role="dialog" aria-modal="true" aria-labelledby="about-title">
           <div class="modal-header">
             <div class="title-group">
               <div class="app-icon" aria-hidden="true">

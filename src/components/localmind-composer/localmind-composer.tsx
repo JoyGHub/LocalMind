@@ -299,7 +299,7 @@ export class LocalMindComposer {
           'inline': this.inline,
         }}
       >
-        <localmind-welcome chatHistory={this.chatHistory} attachedFiles={this.attachedFiles}></localmind-welcome>
+        {!this.inline && <localmind-welcome chatHistory={this.chatHistory} attachedFiles={this.attachedFiles}></localmind-welcome>}
         <localmind-attached-files files={this.attachedFiles} onRemoveFileEvent={e => this.handleRemoveFile(e)}></localmind-attached-files>
         <div class="input-wrapper">
           <textarea

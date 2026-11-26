@@ -108,6 +108,13 @@
   margin-bottom: 5px;
 }
 
+.tool-indicator {
+  margin: 8px 0;
+  color: #6b6b6b;
+  font-size: 0.9em;
+  font-style: italic;
+}
+
 .code-execution {
   display: block;
   margin: 8px 0;

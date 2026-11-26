@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import { Message, MessageGenerationStats, OllamaModel, ThinkingLevel, ToolCall } from '../types/interfaces';
+import { Message, MessageGenerationStats, MessagePart, OllamaModel, ThinkingLevel, ToolCall } from '../types/interfaces';
 import { ollamaService } from './ollama.service';
 import { getOllamaToolsSchema } from './tools';
 import { toolService } from './tool.service';
@@ -7,6 +7,7 @@ import state, { storeService } from '../store/store';
 import { NotificationService } from './notification.service';
 import { Alert } from './alert.service';
 import { settingsState } from './settings.service';
+import { appendMessagePart, getMessageParts } from '../utils/message-parts';
 
 interface ChatStreamResult {
   toolCalls: ToolCall[];
@@ -210,8 +211,13 @@ export class ChatService {
 
         if (toolCallsDetected.length > 0) {
           if (toolExecutionIterations >= MAX_TOOL_EXECUTION_ITERATIONS) {
-            const content = `${finalizedMessage?.content.trim() ? `${finalizedMessage.content.trim()}\n\n` : ''}I reached the five-step tool execution limit, so I could not run additional tools.`;
-            storeService.updateMessageInUI(assistantMessageId, { content, tool_calls: undefined });
+            const prefix = finalizedMessage?.content.trim() ?? '';
+            const suffix = `${prefix ? '\n\n' : ''}I reached the five-step tool execution limit, so I could not run additional tools.`;
+            storeService.updateMessageInUI(assistantMessageId, {
+              content: `${prefix}${suffix}`,
+              parts: appendMessagePart(finalizedMessage ? getMessageParts(finalizedMessage) : [], { type: 'text', content: suffix }),
+              tool_calls: undefined,
+            });
             const limitedMessage = state.activeMessages.find(message => message.id === assistantMessageId);
             if (limitedMessage) {
               await storeService.commitMessageToDB(limitedMessage);
@@ -271,8 +277,12 @@ export class ChatService {
         workflowHasOutput || Boolean(lastWorkflowMessage?.content.trim() || lastWorkflowMessage?.thinking?.trim() || lastWorkflowMessage?.tool_calls?.length);
       workflowHasOutput = hasWorkflowOutput;
       if (hasWorkflowOutput && lastWorkflowMessage) {
-        const content = `${lastWorkflowMessage.content}${lastWorkflowMessage.content ? '\n\n' : ''}Error: ${message}`;
-        storeService.updateMessageInUI(lastWorkflowMessage.id, { content });
+        const errorText = `${lastWorkflowMessage.content ? '\n\n' : ''}Error: ${message}`;
+        const content = `${lastWorkflowMessage.content}${errorText}`;
+        storeService.updateMessageInUI(lastWorkflowMessage.id, {
+          content,
+          parts: appendMessagePart(getMessageParts(lastWorkflowMessage), { type: 'text', content: errorText }),
+        });
         const updatedMessage = state.activeMessages.find(item => item.id === lastWorkflowMessage.id);
         if (updatedMessage) {
           await storeService.commitMessageToDB(updatedMessage);
@@ -322,6 +332,7 @@ export class ChatService {
     const decoder = new TextDecoder();
     let responseText = '';
     let thinkingText = '';
+    let messageParts: MessagePart[] = [];
     let accumulatedToolCalls: ToolCall[] = [];
     let lineBuffer = '';
     let doneReason: string | undefined;
@@ -368,21 +379,35 @@ export class ChatService {
         ...(promptEvaluationDuration !== undefined ? { ttftSeconds: promptEvaluationDuration / 1_000_000_000 } : {}),
       };
 
-      if (json.message?.thinking) {
+      const updates: Partial<Message> = {};
+      if (typeof json.message?.thinking === 'string' && json.message.thinking) {
         thinkingText += json.message.thinking;
-        storeService.updateMessageInUI(assistantMessageId, { thinking: thinkingText });
+        messageParts = appendMessagePart(messageParts, { type: 'thinking', content: json.message.thinking });
+        updates.thinking = thinkingText;
+        updates.parts = messageParts;
       }
 
-      if (json.message?.content) {
+      if (typeof json.message?.content === 'string' && json.message.content) {
         firstContentAt ??= performance.now();
         responseText += json.message.content;
-        storeService.updateMessageInUI(assistantMessageId, { content: responseText });
+        messageParts = appendMessagePart(messageParts, { type: 'text', content: json.message.content });
+        updates.content = responseText;
+        updates.parts = messageParts;
         this.scrollToBottom();
       }
 
-      if (json.message?.tool_calls) {
+      if (Array.isArray(json.message?.tool_calls) && json.message.tool_calls.length > 0) {
         accumulatedToolCalls = [...accumulatedToolCalls, ...json.message.tool_calls];
-        storeService.updateMessageInUI(assistantMessageId, { role: 'assistant', tool_calls: accumulatedToolCalls });
+        for (const call of json.message.tool_calls as ToolCall[]) {
+          messageParts = appendMessagePart(messageParts, { type: 'tool_call', call });
+        }
+        updates.role = 'assistant';
+        updates.tool_calls = accumulatedToolCalls;
+        updates.parts = messageParts;
+      }
+
+      if (Object.keys(updates).length > 0) {
+        storeService.updateMessageInUI(assistantMessageId, updates);
       }
     };
 

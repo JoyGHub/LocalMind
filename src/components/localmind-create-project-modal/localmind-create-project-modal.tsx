@@ -97,8 +97,8 @@ export class LocalMindCreateProjectModal {
   render() {
     if (!this.open) return null;
     return (
-      <div class="backdrop" onMouseDown={event => this.handleMouseDown(event)} onMouseUp={event => this.handleMouseUp(event)}>
-        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title" onKeyDown={event => this.handleKeyDown(event)}>
+      <div class="backdrop modal-backdrop-enter" onMouseDown={event => this.handleMouseDown(event)} onMouseUp={event => this.handleMouseUp(event)}>
+        <div class="modal-card modal-surface-enter" role="dialog" aria-modal="true" aria-labelledby="modal-title" onKeyDown={event => this.handleKeyDown(event)}>
           <div class="modal-header">
             <h3 id="modal-title">New project</h3>
             <sl-icon-button name="x-lg" label="Close" onClick={() => this.hide()} />

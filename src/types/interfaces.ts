@@ -9,6 +9,7 @@ export interface Message {
   modelUsed?: OllamaModel | null;
   generationStats?: MessageGenerationStats;
   tool_calls?: ToolCall[];
+  parts?: MessagePart[];
   name?: string;
   thinking?: string;
   attachment?: {
@@ -53,6 +54,12 @@ export interface ToolCall {
     arguments: Record<string, any>;
   };
 }
+
+export type MessagePart =
+  | { type: 'thinking'; content: string }
+  | { type: 'text'; content: string }
+  | { type: 'tool_call'; call: ToolCall }
+  | { type: 'map'; mapData: MapWidgetData };
 
 export interface AlertOptions {
   message: string;
