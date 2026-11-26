@@ -1,7 +1,20 @@
 import { Component, Element, h, Prop, State } from '@stencil/core';
-import { Message, MessagePart } from '../../types/interfaces';
+import { Message, MessagePart, ToolCall } from '../../types/interfaces';
 import { MarkdownService } from '../../services/markdown.service';
 import { getMessageParts } from '../../utils/message-parts';
+
+type ToolStatusPart = { text: string; emphasis?: boolean };
+type ToolStatus = { icon: string; parts: ToolStatusPart[] };
+type CodeExecutionResult = {
+  language: string;
+  stdout: string;
+  stderr: string;
+  exit_code: number | null;
+  success: boolean;
+  error: string | null;
+  duration_ms: number;
+  running?: boolean;
+};
 
 @Component({
   tag: 'localmind-message',
@@ -12,6 +25,7 @@ import { getMessageParts } from '../../utils/message-parts';
 export class LocalMindMessage {
   @Element() el!: HTMLElement;
   @Prop() message!: Message;
+  @Prop() executionMessages: Message[] = [];
   @Prop() isWritingAnswer!: boolean;
   @State() isHovered = false;
   @State() isExecutionOutputOpen = true;
@@ -22,7 +36,9 @@ export class LocalMindMessage {
     const contentElements = this.el.shadowRoot?.querySelectorAll('.assistant-response-content');
     if (!contentElements?.length) return;
 
-    const currentText = Array.from(contentElements).map(content => content.textContent || '').join('');
+    const currentText = Array.from(contentElements)
+      .map(content => content.textContent || '')
+      .join('');
     if (this.previousResponseText === null) {
       this.previousResponseText = currentText;
       if (this.isWritingAnswer && this.isLastMessage) {
@@ -72,42 +88,140 @@ export class LocalMindMessage {
     }
   }
 
-  getCodeExecutionResult(): {
-    language: string;
-    stdout: string;
-    stderr: string;
-    exit_code: number | null;
-    success: boolean;
-    error: string | null;
-    duration_ms: number;
-    running?: boolean;
-  } | null {
-    if (this.message.role !== 'tool' || this.message.name !== 'execute_code') return null;
+  getToolStatus(call: ToolCall): ToolStatus {
+    const args = call.function.arguments;
+    const getText = (key: string) => {
+      const value = args[key];
+      return typeof value === 'string' && value.trim() ? value.trim() : undefined;
+    };
+    const withDetail = (icon: string, prefix: string, detail: string | undefined, fallback: string) => ({
+      icon,
+      parts: [{ text: prefix }, { text: detail || fallback, emphasis: Boolean(detail) }, { text: '...' }],
+    });
+
+    switch (call.function.name) {
+      case 'search_web':
+        return withDetail('search', 'Searching for ', getText('query'), 'information');
+      case 'search_place_by_query':
+        return withDetail('geo-alt', 'Finding places matching ', getText('query'), 'your search');
+      case 'search_nearby_places':
+        return withDetail('geo-alt', 'Finding nearby ', getText('category'), 'places');
+      case 'get_weather':
+        return withDetail('cloud-sun', 'Getting weather for ', getText('location'), 'your location');
+      case 'get_country_info':
+        return withDetail('globe', 'Getting info on ', getText('country_name'), 'the requested country');
+      case 'get_wikipedia_summary':
+        return withDetail('book', 'Looking up ', getText('topic'), 'that topic');
+      case 'get_world_time':
+        return withDetail('clock', 'Checking the time in ', getText('timezone'), 'the requested location');
+      case 'get_crypto_price':
+        return withDetail('currency-bitcoin', 'Checking the price of ', getText('coin_id'), 'that cryptocurrency');
+      case 'search_memories':
+        return withDetail('journal-text', 'Searching your memories for ', getText('query'), 'relevant details');
+      case 'generate_pdf_report':
+        return withDetail('file-earmark-pdf', 'Generating a PDF about ', getText('title'), 'your topic');
+      case 'calculator':
+        return { icon: 'calculator', parts: [{ text: 'Calculating...' }] };
+      case 'convert_units': {
+        const from = getText('from_unit');
+        const to = getText('to_unit');
+        return {
+          icon: 'arrow-left-right',
+          parts: [
+            { text: 'Converting from ' },
+            { text: from || 'one unit', emphasis: Boolean(from) },
+            { text: ' to ' },
+            { text: to || 'another unit', emphasis: Boolean(to) },
+            { text: '...' },
+          ],
+        };
+      }
+      case 'convert_timestamp_to_date':
+        return { icon: 'calendar3', parts: [{ text: 'Converting timestamp...' }] };
+      case 'get_user_latitude_and_longitude':
+        return { icon: 'geo-alt', parts: [{ text: 'Getting your location...' }] };
+      case 'get_all_memories':
+        return { icon: 'journal-text', parts: [{ text: 'Retrieving your saved memories...' }] };
+      case 'add_memory':
+        return { icon: 'bookmark-plus', parts: [{ text: 'Saving a memory...' }] };
+      default:
+        return {
+          icon: 'gear',
+          parts: [{ text: `Running ${call.function.name.replace(/_/g, ' ')}...` }],
+        };
+    }
+  }
+
+  getCodeExecutionResult(message?: Message): CodeExecutionResult | null {
+    if (!message) return null;
+    if (message.role !== 'tool' || message.name !== 'execute_code') return null;
     try {
-      return JSON.parse(this.message.content);
+      return JSON.parse(message.content);
     } catch {
       return null;
     }
   }
 
-  renderPart(part: MessagePart, index: number) {
+  renderExecutionOutput(result: CodeExecutionResult | null) {
+    return (
+      <section class="execution-output">
+        <strong>Output</strong>
+        {result?.stdout && (
+          <section>
+            <strong>stdout</strong>
+            <pre>{result.stdout}</pre>
+          </section>
+        )}
+        {result?.stderr && (
+          <section>
+            <strong>stderr</strong>
+            <pre>{result.stderr}</pre>
+          </section>
+        )}
+        {result?.error && <p class="execution-error">{result.error}</p>}
+        <p class="execution-status">
+          {result
+            ? result.running
+              ? result.stdout || result.stderr
+                ? 'Execution in progress...'
+                : 'Waiting for output...'
+              : `Exit code: ${result.exit_code === null ? 'timed out' : result.exit_code}`
+            : 'Waiting for output...'}
+        </p>
+      </section>
+    );
+  }
+
+  renderPart(part: MessagePart, index: number, executionResult: CodeExecutionResult | null = null) {
     switch (part.type) {
       case 'thinking':
         return (
-          <sl-details key={index} summary="Thinking Process" class="thinking-block">
+          <sl-details key={index} summary="Thinking..." class="thinking-block">
             {part.content}
           </sl-details>
         );
       case 'text':
         return <div key={index} class="assistant-response-content" innerHTML={MarkdownService.render(part.content)}></div>;
-      case 'tool_call':
-        return part.call.function.name === 'execute_code' ? (
-          <sl-details key={index} class="code-execution" summary={`Run ${String(part.call.function.arguments.language || 'code')}`}>
-            <pre><code>{String(part.call.function.arguments.code || '')}</code></pre>
-          </sl-details>
-        ) : (
-          <div key={index} class="tool-indicator">Using tool: {part.call.function.name}...</div>
+      case 'tool_call': {
+        if (part.call.function.name === 'execute_code') {
+          return (
+            <sl-details key={index} class="code-execution" summary={`Run ${String(part.call.function.arguments.language || 'code')}`}>
+              <pre>
+                <code>{String(part.call.function.arguments.code || '')}</code>
+              </pre>
+              {this.renderExecutionOutput(executionResult)}
+            </sl-details>
+          );
+        }
+
+        const status = this.getToolStatus(part.call);
+        return (
+          <div key={index} class="tool-indicator">
+            <sl-icon name={status.icon} aria-hidden="true"></sl-icon>
+            <span>{status.parts.map(part => (part.emphasis ? <strong>{part.text}</strong> : part.text))}</span>
+          </div>
         );
+      }
       case 'map':
         return (
           <div key={index} class="map-widgets">
@@ -120,8 +234,9 @@ export class LocalMindMessage {
   render() {
     if (!this.message) return null;
 
-    const executionResult = this.getCodeExecutionResult();
+    const executionResult = this.getCodeExecutionResult(this.message);
     const messageParts = getMessageParts(this.message);
+    let codeExecutionIndex = 0;
     return (
       <div
         class={{
@@ -133,11 +248,15 @@ export class LocalMindMessage {
         onMouseLeave={() => (this.isHovered = false)}
         id={this.message.id}
       >
-        {this.message.role === 'user' ? (
-          this.message.content.trim() !== '' && <p>{this.message.content}</p>
-        ) : (
-          messageParts.map((part, index) => this.renderPart(part, index))
-        )}
+        {this.message.role === 'user'
+          ? this.message.content.trim() !== '' && <p>{this.message.content}</p>
+          : messageParts.map((part, index) => {
+              const callResult =
+                part.type === 'tool_call' && part.call.function.name === 'execute_code'
+                  ? this.getCodeExecutionResult(this.executionMessages[codeExecutionIndex++])
+                  : null;
+              return this.renderPart(part, index, callResult);
+            })}
 
         {executionResult && (
           <sl-details
@@ -154,16 +273,7 @@ export class LocalMindMessage {
                 : `${executionResult.language} ${executionResult.success ? 'completed' : 'failed'} · ${executionResult.duration_ms} ms`
             }
           >
-            {executionResult.stdout && <section><strong>stdout</strong><pre>{executionResult.stdout}</pre></section>}
-            {executionResult.stderr && <section><strong>stderr</strong><pre>{executionResult.stderr}</pre></section>}
-            {executionResult.error && <p class="execution-error">{executionResult.error}</p>}
-            <p class="execution-status">
-              {executionResult.running
-                ? executionResult.stdout || executionResult.stderr
-                  ? 'Execution in progress...'
-                  : 'Waiting for output...'
-                : `Exit code: ${executionResult.exit_code === null ? 'timed out' : executionResult.exit_code}`}
-            </p>
+            {this.renderExecutionOutput(executionResult)}
           </sl-details>
         )}
 
@@ -208,11 +318,7 @@ export class LocalMindMessage {
 
         {/* Actions: Hidden while streaming is active, and only visible if actual content exists */}
         {this.message.role === 'assistant' && !this.isWritingAnswer && this.message.content && (
-          <localmind-message-actions
-            message={this.message}
-            visible={this.isHovered}
-            isLastMessage={this.isLastMessage}>
-          </localmind-message-actions>
+          <localmind-message-actions message={this.message} visible={this.isHovered} isLastMessage={this.isLastMessage}></localmind-message-actions>
         )}
       </div>
     );

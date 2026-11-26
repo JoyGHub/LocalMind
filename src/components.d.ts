@@ -61,6 +61,7 @@ export namespace Components {
         "mapData": MapWidgetData;
     }
     interface LocalmindMessage {
+        "executionMessages": Message[];
         "isLastMessage": boolean;
         "isWritingAnswer": boolean;
         "message": Message;
@@ -737,6 +738,7 @@ declare namespace LocalJSX {
         "mapData": MapWidgetData;
     }
     interface LocalmindMessage {
+        "executionMessages"?: Message[];
         "isLastMessage": boolean;
         "isWritingAnswer": boolean;
         "message": Message;

@@ -7,11 +7,12 @@
 
 ## Properties
 
-| Property                       | Attribute           | Description | Type      | Default     |
-| ------------------------------ | ------------------- | ----------- | --------- | ----------- |
-| `isLastMessage` _(required)_   | `is-last-message`   |             | `boolean` | `undefined` |
-| `isWritingAnswer` _(required)_ | `is-writing-answer` |             | `boolean` | `undefined` |
-| `message` _(required)_         | --                  |             | `Message` | `undefined` |
+| Property                       | Attribute           | Description | Type        | Default     |
+| ------------------------------ | ------------------- | ----------- | ----------- | ----------- |
+| `executionMessages`            | --                  |             | `Message[]` | `[]`        |
+| `isLastMessage` _(required)_   | `is-last-message`   |             | `boolean`   | `undefined` |
+| `isWritingAnswer` _(required)_ | `is-writing-answer` |             | `boolean`   | `undefined` |
+| `message` _(required)_         | --                  |             | `Message`   | `undefined` |
 
 
 ## Dependencies

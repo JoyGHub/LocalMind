@@ -9,6 +9,7 @@ export class LocalmindAboutModal {
   @Prop({ mutable: true, reflect: true }) open: boolean = false;
 
   isMouseDownOnBackdrop: boolean = false;
+  currentYear = new Date().getFullYear();
 
   @Method()
   async show() {
@@ -56,10 +57,6 @@ export class LocalmindAboutModal {
 
             <div class="details">
               <div class="detail-row">
-                <span class="detail-label">Created by</span>
-                <span class="detail-value">Rizea Daniel-Stefan</span>
-              </div>
-              <div class="detail-row">
                 <span class="detail-label">License</span>
                 <a class="detail-value link" href="https://github.com/JoyGHub/LocalMind/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">
                   MIT License <sl-icon name="box-arrow-up-right" aria-hidden="true"></sl-icon>
@@ -75,7 +72,7 @@ export class LocalmindAboutModal {
           </div>
 
           <div class="modal-footer">
-            <span>Copyright © 2026 Rizea Daniel-Stefan</span>
+            <span>Copyright © {this.currentYear}</span>
           </div>
         </section>
       </div>

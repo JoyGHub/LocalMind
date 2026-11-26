@@ -26,7 +26,7 @@
 
 .assistant-message {
   margin-right: auto;
-  padding: 20px;
+  padding: 20px 0px;
   border-radius: 15px 15px 15px 0;
   width: 100%;
   color: #414141;
@@ -105,19 +105,40 @@
    ========================================================================== */
 
 .thinking-block {
-  margin-bottom: 5px;
+  padding-bottom: 15px;
 }
 
 .tool-indicator {
-  margin: 8px 0;
-  color: #6b6b6b;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: fit-content;
+  max-width: 100%;
+  margin-bottom: 15px;
+  padding: 7px 12px;
+  border-left: 3px solid #8c61ff;
+  border-radius: 0 8px 8px 0;
+  background: #f7f4ff;
+  color: #555064;
   font-size: 0.9em;
-  font-style: italic;
+  line-height: 1.5;
+  user-select: none;
+}
+
+.tool-indicator sl-icon {
+  flex: 0 0 auto;
+  color: #7850dc;
+  font-size: 1.05em;
+}
+
+.tool-indicator strong {
+  color: #383044;
+  font-weight: 700;
 }
 
 .code-execution {
   display: block;
-  margin: 8px 0;
+  margin-bottom: 15px;
   max-width: 100%;
   line-height: 1.5;
 }
@@ -151,6 +172,17 @@
   background: #f0f4fa;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+
+.execution-output {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #e6e6ef;
+}
+
+.execution-output > strong {
+  display: block;
+  margin-bottom: 6px;
 }
 
 .code-execution-failed::part(summary),
@@ -376,4 +408,12 @@ td {
 
 tbody tr:last-child td {
   border-bottom: none;
+}
+
+/* ==========================================================================
+   Maps
+   ========================================================================== */
+
+.map-widgets {
+  margin-bottom: 15px;
 }

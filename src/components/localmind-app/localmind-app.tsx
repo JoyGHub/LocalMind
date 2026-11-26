@@ -405,6 +405,16 @@ export class LocalMindApp {
                       <localmind-message
                         key={message.id}
                         message={message}
+                        executionMessages={
+                          message.workflowId
+                            ? state.activeMessages.filter(
+                                toolMessage =>
+                                  toolMessage.role === 'tool' &&
+                                  toolMessage.name === 'execute_code' &&
+                                  toolMessage.workflowId === message.workflowId,
+                              )
+                            : []
+                        }
                         isWritingAnswer={this.isWritingAnswer && index === displayableMessages.length - 1 && message.role === 'assistant'}
                         isLastMessage={index === displayableMessages.length - 1}
                       />
