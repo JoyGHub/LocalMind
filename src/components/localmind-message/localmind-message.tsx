@@ -2,6 +2,7 @@ import { Component, Element, h, Prop, State } from '@stencil/core';
 import { Message, MessagePart, ToolCall } from '../../types/interfaces';
 import { MarkdownService } from '../../services/markdown.service';
 import { getMessageParts } from '../../utils/message-parts';
+import { downloadImageAsFormat, ImageDownloadFormat } from '../../utils/image-download';
 
 type ToolStatusPart = { text: string; emphasis?: boolean };
 type ToolStatus = { icon: string; parts: ToolStatusPart[] };
@@ -27,10 +28,49 @@ export class LocalMindMessage {
   @Prop() message!: Message;
   @Prop() executionMessages: Message[] = [];
   @Prop() isWritingAnswer!: boolean;
+  @Prop() isLastMessage!: boolean;
+
   @State() isHovered = false;
   @State() isExecutionOutputOpen = true;
-  @Prop() isLastMessage!: boolean;
+  @State() isImageFullscreen = false;
+
+  downloadMenuEl!: HTMLElement;
   previousResponseText: string | null = null;
+
+  componentDidLoad() {
+    if (this.downloadMenuEl) {
+      this.downloadMenuEl.addEventListener('sl-select', this.boundHandleDownloadSelect);
+    }
+  }
+
+  disconnectedCallback() {
+    if (this.downloadMenuEl) {
+      this.downloadMenuEl.removeEventListener('sl-select', this.boundHandleDownloadSelect);
+    }
+  }
+
+  boundHandleDownloadSelect = (event: Event) => {
+    const generatedImage = this.message?.attachment?.type === 'generated-image' ? this.message.attachment : null;
+    if (!generatedImage) return;
+
+    const customEvent = event as CustomEvent<{ item: { value?: string } }>;
+    const format = customEvent.detail?.item?.value as ImageDownloadFormat | undefined;
+    if (!format) return;
+
+    downloadImageAsFormat(generatedImage.url, format, generatedImage.name);
+  };
+
+  handleImageClick = () => {
+    this.isImageFullscreen = true;
+  };
+
+  handleDownloadControlClick = (event: MouseEvent) => {
+    event.stopPropagation();
+  };
+
+  handleCloseFullscreen = () => {
+    this.isImageFullscreen = false;
+  };
 
   componentDidRender() {
     const contentElements = this.el.shadowRoot?.querySelectorAll('.assistant-response-content');
@@ -239,9 +279,7 @@ export class LocalMindMessage {
     const executionResult = this.getCodeExecutionResult(this.message);
     const messageParts = getMessageParts(this.message);
     let codeExecutionIndex = 0;
-    const generatedImage = this.message.attachment?.type === 'generated-image'
-      ? this.message.attachment
-      : null;
+    const generatedImage = this.message.attachment?.type === 'generated-image' ? this.message.attachment : null;
     return (
       <div
         class={{
@@ -257,9 +295,7 @@ export class LocalMindMessage {
           ? this.message.content.trim() !== '' && <p>{this.message.content}</p>
           : messageParts.map((part, index) => {
               const callResult =
-                part.type === 'tool_call' && part.call.function.name === 'execute_code'
-                  ? this.getCodeExecutionResult(this.executionMessages[codeExecutionIndex++])
-                  : null;
+                part.type === 'tool_call' && part.call.function.name === 'execute_code' ? this.getCodeExecutionResult(this.executionMessages[codeExecutionIndex++]) : null;
               return this.renderPart(part, index, callResult);
             })}
 
@@ -310,36 +346,42 @@ export class LocalMindMessage {
         {/* File Attachment Card (Ensure it's outside the text elements) */}
         {generatedImage ? (
           <div class="generated-image-card">
-            <img class="generated-image-preview" src={generatedImage.url} alt={generatedImage.prompt || 'Generated image'} />
+            <div class="generated-image-media" onClick={this.handleImageClick}>
+              <img class="generated-image-preview" src={generatedImage.url} alt={generatedImage.prompt || 'Generated image'} />
+              <div class="generated-image-download-overlay" onClick={this.handleDownloadControlClick}>
+                <sl-dropdown placement="top-end" hoist>
+                  <span slot="trigger" class="image-download-icon-btn" role="button" tabindex={0} aria-label="Download image">
+                    <sl-icon name="download"></sl-icon>
+                  </span>
+                  <sl-menu ref={(el: any) => (this.downloadMenuEl = el as any)}>
+                    <sl-menu-item value="png">PNG</sl-menu-item>
+                    <sl-menu-item value="jpg">JPG</sl-menu-item>
+                    <sl-menu-item value="webp">WEBP</sl-menu-item>
+                    <sl-menu-item value="bmp">BMP</sl-menu-item>
+                    <sl-menu-item value="gif">GIF</sl-menu-item>
+                    <sl-menu-item value="ico">ICO</sl-menu-item>
+                  </sl-menu>
+                </sl-dropdown>
+              </div>
+            </div>
             <div class="generated-image-footer">
               <div class="generated-image-meta">
                 {generatedImage.modelName && <span class="generated-image-badge">{generatedImage.modelName}</span>}
                 {generatedImage.width && generatedImage.height && (
-                  <span class="generated-image-resolution">{generatedImage.width}x{generatedImage.height}</span>
+                  <span class="generated-image-resolution">
+                    {generatedImage.width}x{generatedImage.height}
+                  </span>
                 )}
               </div>
-              <div class="generated-image-actions">
-                <sl-button size="small" href={generatedImage.url} download={generatedImage.name}>
-                  <sl-icon slot="prefix" name="download"></sl-icon>
-                  Download PNG
-                </sl-button>
-                <sl-button size="small" target="_blank" href={generatedImage.url}>
-                  <sl-icon slot="prefix" name="box-arrow-up-right"></sl-icon>
-                  View Full Size
-                </sl-button>
-              </div>
             </div>
-          </div>
-        ) : this.message.attachment ? (
-          <div class="file-attachment-card">
-            <div class="file-icon">📄</div>
-            <div class="file-details">
-              <span class="file-name">{this.message.attachment.name}</span>
-              <span class="file-size">{this.message.attachment.size}</span>
-            </div>
-            <a href={this.message.attachment.url} download={this.message.attachment.name} class="download-btn">
-              Download
-            </a>
+            {this.isImageFullscreen && (
+              <localmind-fullscreen-image
+                src={generatedImage.url}
+                alt={generatedImage.prompt || 'Generated image'}
+                fileName={generatedImage.name}
+                onCloseFullscreen={this.handleCloseFullscreen}
+              ></localmind-fullscreen-image>
+            )}
           </div>
         ) : null}
 

@@ -49,6 +49,11 @@ export namespace Components {
         "open": boolean;
         "show": (id: string, name: string) => Promise<void>;
     }
+    interface LocalmindFullscreenImage {
+        "alt": string;
+        "fileName"?: string;
+        "src": string;
+    }
     interface LocalmindHistory {
     }
     interface LocalmindListenCard {
@@ -198,6 +203,10 @@ export interface LocalmindDeleteModalCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLLocalmindDeleteModalElement;
 }
+export interface LocalmindFullscreenImageCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLLocalmindFullscreenImageElement;
+}
 export interface LocalmindHistoryCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLLocalmindHistoryElement;
@@ -340,6 +349,23 @@ declare global {
     var HTMLLocalmindDeleteModalElement: {
         prototype: HTMLLocalmindDeleteModalElement;
         new (): HTMLLocalmindDeleteModalElement;
+    };
+    interface HTMLLocalmindFullscreenImageElementEventMap {
+        "closeFullscreen": void;
+    }
+    interface HTMLLocalmindFullscreenImageElement extends Components.LocalmindFullscreenImage, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLLocalmindFullscreenImageElementEventMap>(type: K, listener: (this: HTMLLocalmindFullscreenImageElement, ev: LocalmindFullscreenImageCustomEvent<HTMLLocalmindFullscreenImageElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLLocalmindFullscreenImageElementEventMap>(type: K, listener: (this: HTMLLocalmindFullscreenImageElement, ev: LocalmindFullscreenImageCustomEvent<HTMLLocalmindFullscreenImageElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLLocalmindFullscreenImageElement: {
+        prototype: HTMLLocalmindFullscreenImageElement;
+        new (): HTMLLocalmindFullscreenImageElement;
     };
     interface HTMLLocalmindHistoryElementEventMap {
         "conversationChangeEvent": void;
@@ -663,6 +689,7 @@ declare global {
         "localmind-composer": HTMLLocalmindComposerElement;
         "localmind-create-project-modal": HTMLLocalmindCreateProjectModalElement;
         "localmind-delete-modal": HTMLLocalmindDeleteModalElement;
+        "localmind-fullscreen-image": HTMLLocalmindFullscreenImageElement;
         "localmind-history": HTMLLocalmindHistoryElement;
         "localmind-listen-card": HTMLLocalmindListenCardElement;
         "localmind-map": HTMLLocalmindMapElement;
@@ -736,6 +763,12 @@ declare namespace LocalJSX {
         "onDeleteConfirm"?: (event: LocalmindDeleteModalCustomEvent<string>) => void;
         "onProjectDeleteConfirm"?: (event: LocalmindDeleteModalCustomEvent<{ id: string; deleteChats: boolean }>) => void;
         "open"?: boolean;
+    }
+    interface LocalmindFullscreenImage {
+        "alt"?: string;
+        "fileName"?: string;
+        "onCloseFullscreen"?: (event: LocalmindFullscreenImageCustomEvent<void>) => void;
+        "src": string;
     }
     interface LocalmindHistory {
         "onConversationChangeEvent"?: (event: LocalmindHistoryCustomEvent<void>) => void;
@@ -883,6 +916,7 @@ declare namespace LocalJSX {
         "localmind-composer": LocalmindComposer;
         "localmind-create-project-modal": LocalmindCreateProjectModal;
         "localmind-delete-modal": LocalmindDeleteModal;
+        "localmind-fullscreen-image": LocalmindFullscreenImage;
         "localmind-history": LocalmindHistory;
         "localmind-listen-card": LocalmindListenCard;
         "localmind-map": LocalmindMap;
@@ -927,6 +961,7 @@ declare module "@stencil/core" {
             "localmind-composer": LocalJSX.LocalmindComposer & JSXBase.HTMLAttributes<HTMLLocalmindComposerElement>;
             "localmind-create-project-modal": LocalJSX.LocalmindCreateProjectModal & JSXBase.HTMLAttributes<HTMLLocalmindCreateProjectModalElement>;
             "localmind-delete-modal": LocalJSX.LocalmindDeleteModal & JSXBase.HTMLAttributes<HTMLLocalmindDeleteModalElement>;
+            "localmind-fullscreen-image": LocalJSX.LocalmindFullscreenImage & JSXBase.HTMLAttributes<HTMLLocalmindFullscreenImageElement>;
             "localmind-history": LocalJSX.LocalmindHistory & JSXBase.HTMLAttributes<HTMLLocalmindHistoryElement>;
             "localmind-listen-card": LocalJSX.LocalmindListenCard & JSXBase.HTMLAttributes<HTMLLocalmindListenCardElement>;
             "localmind-map": LocalJSX.LocalmindMap & JSXBase.HTMLAttributes<HTMLLocalmindMapElement>;
