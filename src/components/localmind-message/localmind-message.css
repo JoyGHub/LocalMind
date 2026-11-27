@@ -293,6 +293,65 @@
   transform: scale(0.97);
 }
 
+.generated-image-card {
+  width: min(760px, 100%);
+  margin-top: 12px;
+  overflow: hidden;
+  border: 1px solid #e6e6ef;
+  border-radius: 14px;
+  background: #fff;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.generated-image-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(65, 65, 65, 0.12);
+}
+
+.generated-image-preview {
+  display: block;
+  width: 100%;
+  max-height: 620px;
+  object-fit: contain;
+  border-radius: 13px 13px 0 0;
+  background: #f7f7fa;
+}
+
+.generated-image-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-top: 1px solid #ececf2;
+}
+
+.generated-image-meta,
+.generated-image-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.generated-image-badge,
+.generated-image-resolution {
+  font-size: 0.78em;
+  line-height: 1.4;
+}
+
+.generated-image-badge {
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #f1ecff;
+  color: #6f4bc3;
+  font-weight: 700;
+}
+
+.generated-image-resolution {
+  color: #777;
+}
+
 /* ==========================================================================
    Attached files 
    ========================================================================== */

@@ -6,6 +6,11 @@ export class LlmAttachmentService {
 
     let processedAttachment = { ...attachment };
 
+    if (processedAttachment.type === 'generated-image' &&
+        (processedAttachment.url?.startsWith('http://') || processedAttachment.url?.startsWith('https://'))) {
+      return processedAttachment;
+    }
+
     // Convert volatile blob URLs to permanent Base64 strings
     if (processedAttachment.url?.startsWith('blob:')) {
       processedAttachment.url = await convertBlobUrlToBase64(processedAttachment.url);

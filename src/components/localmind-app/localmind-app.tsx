@@ -10,6 +10,7 @@ import { NotificationService } from '../../services/notification.service';
 import { chatService } from '../../services/chat.service';
 import { settingsService, settingsState } from '../../services/settings.service';
 import type { MapWidgetEventDetail } from '../../utils/utility';
+import { imageGenService } from '../../services/image-gen.service';
 
 @Component({
   tag: 'localmind-app',
@@ -27,6 +28,7 @@ export class LocalMindApp {
   @State() isWritingAnswer!: boolean;
   @State() thinkingLevel: ThinkingLevel = 'off';
   @State() useWebSearch: boolean = false;
+  @State() useImageGeneration: boolean = false;
   @State() isAppReady: boolean = false;
   @State() showSplash: boolean = true;
   @State() sidebarCollapsed: boolean = false;
@@ -38,7 +40,7 @@ export class LocalMindApp {
   modelsCardEl: any;
 
   @Listen('promptEvent')
-  async handlePromptEvent(event: CustomEvent<{ text: string; files: File[] }>) {
+  async handlePromptEvent(event: CustomEvent<{ text: string; files: File[]; imageMode: boolean }>) {
     if (!this.selectedModel) {
       Alert.error('Please select a model first.');
       return;
@@ -46,6 +48,7 @@ export class LocalMindApp {
 
     const finalPrompt = event.detail.text;
     const files = event.detail.files;
+    const imageMode = event.detail.imageMode && settingsState.imageGenEnabled;
     const requestId = ++this.requestId;
     let attachedImages: string[] = [];
     let attachedFilesData: { name: string; size: number; type: string }[] = [];
@@ -80,11 +83,42 @@ export class LocalMindApp {
 
       this.isWritingAnswer = true;
 
+      if (imageMode && !this.selectedModel.capabilities?.includes('tools')) {
+        try {
+          const result = await imageGenService.generateImage({
+            prompt: finalPrompt,
+            ollama_model: this.selectedModel.model,
+          });
+          await chatService.addMessage(
+            `Created with ${result.modelName} (${result.width}x${result.height}).`,
+            false,
+            this.selectedModel,
+            {
+              attachment: {
+                type: 'generated-image',
+                url: result.imageUrl,
+                name: result.fileName,
+                prompt: result.prompt,
+                modelName: result.modelName,
+                width: result.width,
+                height: result.height,
+                seed: result.seed,
+              },
+            },
+          );
+        } catch (error) {
+          throw error;
+        }
+        this.requestIsPending = false;
+        this.isWritingAnswer = false;
+        return;
+      }
+
       await chatService.executeWorkflow(this.selectedModel, this.thinkingLevel, this.useWebSearch, () => {
         if (requestId !== this.requestId) return;
         this.requestIsPending = false;
         this.isWritingAnswer = false;
-      });
+      }, imageMode);
     } catch (error) {
       if (requestId === this.requestId) {
         Alert.error(error instanceof Error ? error.message : String(error));
@@ -170,6 +204,11 @@ export class LocalMindApp {
   @Listen('webSearchToggleEvent')
   handleWebSearchToggleEvent(event: CustomEvent<boolean>) {
     this.useWebSearch = event.detail;
+  }
+
+  @Listen('imageToggleEvent')
+  handleImageToggleEvent(event: CustomEvent<boolean>) {
+    this.useImageGeneration = event.detail;
   }
 
   @Listen('newChatEvent')

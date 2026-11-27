@@ -120,6 +120,8 @@ export class LocalMindMessage {
         return withDetail('journal-text', 'Searching your memories for ', getText('query'), 'relevant details');
       case 'generate_pdf_report':
         return withDetail('file-earmark-pdf', 'Generating a PDF about ', getText('title'), 'your topic');
+      case 'generate_image':
+        return withDetail('image', 'Generating an image of ', getText('prompt'), 'your description');
       case 'calculator':
         return { icon: 'calculator', parts: [{ text: 'Calculating...' }] };
       case 'convert_units': {
@@ -237,6 +239,9 @@ export class LocalMindMessage {
     const executionResult = this.getCodeExecutionResult(this.message);
     const messageParts = getMessageParts(this.message);
     let codeExecutionIndex = 0;
+    const generatedImage = this.message.attachment?.type === 'generated-image'
+      ? this.message.attachment
+      : null;
     return (
       <div
         class={{
@@ -303,7 +308,29 @@ export class LocalMindMessage {
         )}
 
         {/* File Attachment Card (Ensure it's outside the text elements) */}
-        {this.message.attachment ? (
+        {generatedImage ? (
+          <div class="generated-image-card">
+            <img class="generated-image-preview" src={generatedImage.url} alt={generatedImage.prompt || 'Generated image'} />
+            <div class="generated-image-footer">
+              <div class="generated-image-meta">
+                {generatedImage.modelName && <span class="generated-image-badge">{generatedImage.modelName}</span>}
+                {generatedImage.width && generatedImage.height && (
+                  <span class="generated-image-resolution">{generatedImage.width}x{generatedImage.height}</span>
+                )}
+              </div>
+              <div class="generated-image-actions">
+                <sl-button size="small" href={generatedImage.url} download={generatedImage.name}>
+                  <sl-icon slot="prefix" name="download"></sl-icon>
+                  Download PNG
+                </sl-button>
+                <sl-button size="small" target="_blank" href={generatedImage.url}>
+                  <sl-icon slot="prefix" name="box-arrow-up-right"></sl-icon>
+                  View Full Size
+                </sl-button>
+              </div>
+            </div>
+          </div>
+        ) : this.message.attachment ? (
           <div class="file-attachment-card">
             <div class="file-icon">📄</div>
             <div class="file-details">

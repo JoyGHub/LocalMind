@@ -3,6 +3,7 @@ import { Message, OllamaModel, ThinkingLevel } from '../../types/interfaces';
 import { Alert } from '../../services/alert.service';
 import { speechRecognitionService } from '../../services/speech-recognition.service';
 import { ACCEPTED_FILE_EXTENSIONS, MAX_FILE_SIZE_BYTES, MAX_FILE_SIZE_MB, MAX_FILES_LIMIT } from '../../constants/constants';
+import { settingsState } from '../../services/settings.service';
 
 @Component({
   tag: 'localmind-composer',
@@ -24,12 +25,14 @@ export class LocalMindComposer {
   @State() useWebSearch!: boolean;
   @State() attachedFiles!: File[];
   @State() isListening: boolean = false;
+  @State() useImageGeneration: boolean = false;
 
-  @Event() promptEvent!: EventEmitter<{ text: string; files: File[] }>;
+  @Event() promptEvent!: EventEmitter<{ text: string; files: File[]; imageMode: boolean }>;
   @Event() cancelGenerationEvent!: EventEmitter<void>;
   @Event() modelSelectedEvent!: EventEmitter<OllamaModel>;
   @Event() thinkLevelEvent!: EventEmitter<ThinkingLevel>;
   @Event() webSearchToggleEvent!: EventEmitter<boolean>;
+  @Event() imageToggleEvent!: EventEmitter<boolean>;
 
   fileInputEl!: HTMLInputElement;
   textAreaEl!: HTMLTextAreaElement;
@@ -97,6 +100,7 @@ export class LocalMindComposer {
       this.promptEvent.emit({
         text: this.promptText.trim(),
         files: this.attachedFiles || [],
+        imageMode: this.useImageGeneration,
       });
 
       this.promptText = '';
@@ -119,6 +123,11 @@ export class LocalMindComposer {
   toggleWebSearch() {
     this.useWebSearch = !this.useWebSearch;
     this.webSearchToggleEvent.emit(this.useWebSearch);
+  }
+
+  toggleImageGeneration() {
+    this.useImageGeneration = !this.useImageGeneration;
+    this.imageToggleEvent.emit(this.useImageGeneration);
   }
 
   handleThinkingLevelChange(event: Event) {
@@ -322,6 +331,13 @@ export class LocalMindComposer {
                   <sl-icon-button name="globe" onClick={() => this.toggleWebSearch()}></sl-icon-button>
                 </sl-tooltip>
               </div>
+              {settingsState.imageGenEnabled && (
+                <div class={this.useImageGeneration ? 'search-toggle-wrapper active' : 'search-toggle-wrapper'}>
+                  <sl-tooltip content={this.useImageGeneration ? 'Disable Image Generation' : 'Image Generation'} placement="top">
+                    <sl-icon-button name="image" onClick={() => this.toggleImageGeneration()}></sl-icon-button>
+                  </sl-tooltip>
+                </div>
+              )}
               {this.selectedModel?.capabilities?.includes('thinking') && (
                 <sl-dropdown class="thinking-level-dropdown" placement="top-start" hoist>
                   <button

@@ -37,13 +37,16 @@ export class ChatService {
     await this.executeWorkflow(model, thinkingLevel, useWebSearch, onComplete);
   }
 
-  async executeWorkflow(model: OllamaModel, thinkingLevel: ThinkingLevel, useWebSearch: boolean, onComplete: () => void): Promise<void> {
+  async executeWorkflow(model: OllamaModel, thinkingLevel: ThinkingLevel, useWebSearch: boolean, onComplete: () => void, imageMode: boolean = false): Promise<void> {
     const workflowStartedAt = performance.now();
     const hasThinking = model.capabilities?.includes('thinking');
     const hasTools = model.capabilities?.includes('tools');
 
     const activeThinkSetting = hasThinking && thinkingLevel !== 'off' ? thinkingLevel : false;
-    const activeToolsSchema = hasTools ? getOllamaToolsSchema() : undefined;
+    const activeToolsSchema = hasTools
+      ? getOllamaToolsSchema().filter(tool =>
+          settingsState.imageGenEnabled || tool.function.name !== 'generate_image')
+      : undefined;
 
     const controller = new AbortController();
     this.chatController = controller;
@@ -143,6 +146,13 @@ export class ChatService {
           if (lastMsg.role === 'user') {
             lastMsg.content += 'The user has enabled Web Search for this prompt. If you think its needed, use search tools to gather up-to-date information before answering.';
           }
+
+          if (imageMode && !isContinuation && mappedMessages.length > 0) {
+            const lastMsg = mappedMessages[mappedMessages.length - 1];
+            if (lastMsg.role === 'user') {
+              lastMsg.content += '\n\n[SYSTEM NOTE: Image Generation mode is active. Use the generate_image tool to create the requested image.]';
+            }
+          }
         }
 
         if (toolExecutionIterations >= MAX_TOOL_EXECUTION_ITERATIONS) {
@@ -225,7 +235,7 @@ export class ChatService {
             break;
           }
           toolExecutionIterations++;
-          const attachment = await toolService.executeToolCalls(toolCallsDetected, conversationId!, workflowId, controller.signal);
+          const attachment = await toolService.executeToolCalls(toolCallsDetected, conversationId!, workflowId, controller.signal, model.model);
           if (controller.signal.aborted) return;
           detectedAttachment = attachment ?? detectedAttachment;
           continue;

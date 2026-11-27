@@ -1,6 +1,6 @@
 import { createStore } from '@stencil/store';
 import { DEFAULT_SYSTEM_INSTRUCTIONS, SYSTEM_INSTRUCTION } from '../constants/prompts';
-import { LocalMindSettings, ThinkingLevel } from '../types/interfaces';
+import { ImageGenBackendType, LocalMindSettings, ThinkingLevel } from '../types/interfaces';
 
 const defaultSettings: LocalMindSettings = {
   language: 'English',
@@ -16,6 +16,10 @@ const defaultSettings: LocalMindSettings = {
   saveMemories: true,
   readMemories: true,
   thinkingLevel: 'off',
+  imageGenEnabled: true,
+  defaultImageModel: '',
+  unloadLlmBeforeImageGen: false,
+  imageGenBackend: 'auto',
 };
 
 const { state: settingsState } = createStore<LocalMindSettings>(defaultSettings);
@@ -26,10 +30,20 @@ class SettingsService {
   constructor() {
     this.storageKey = 'localmind_user_settings';
     this.init();
+    this.setupWatchers();
   }
 
   init() {
     this.loadSettings();
+  }
+
+  setupWatchers() {
+    settingsState.imageGenEnabled = typeof settingsState.imageGenEnabled === 'boolean' ? settingsState.imageGenEnabled : defaultSettings.imageGenEnabled;
+    settingsState.defaultImageModel = typeof settingsState.defaultImageModel === 'string' ? settingsState.defaultImageModel : defaultSettings.defaultImageModel;
+    settingsState.unloadLlmBeforeImageGen =
+      typeof settingsState.unloadLlmBeforeImageGen === 'boolean' ? settingsState.unloadLlmBeforeImageGen : defaultSettings.unloadLlmBeforeImageGen;
+    const validBackends: ImageGenBackendType[] = ['auto', 'cuda', 'vulkan', 'metal', 'cpu'];
+    settingsState.imageGenBackend = validBackends.includes(settingsState.imageGenBackend) ? settingsState.imageGenBackend : defaultSettings.imageGenBackend;
   }
 
   loadSettings() {
@@ -53,9 +67,7 @@ class SettingsService {
               : [legacySystemPrompt]
             : DEFAULT_SYSTEM_INSTRUCTIONS;
         const thinkingLevel: ThinkingLevel =
-          storedSettings.thinkingLevel === 'low' || storedSettings.thinkingLevel === 'medium' || storedSettings.thinkingLevel === 'high'
-            ? storedSettings.thinkingLevel
-            : 'off';
+          storedSettings.thinkingLevel === 'low' || storedSettings.thinkingLevel === 'medium' || storedSettings.thinkingLevel === 'high' ? storedSettings.thinkingLevel : 'off';
 
         Object.assign(settingsState, {
           ...defaultSettings,

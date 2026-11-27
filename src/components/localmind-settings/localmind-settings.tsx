@@ -53,7 +53,7 @@ export class LocalMindSettings {
 
     try {
       const settingsPanels = this.el.shadowRoot?.querySelectorAll(
-        'localmind-settings-general, localmind-settings-model, localmind-settings-appearance',
+        'localmind-settings-general, localmind-settings-model, localmind-settings-appearance, localmind-settings-image-gen',
       );
       for (const panel of Array.from(settingsPanels ?? []) as any[]) {
         if (panel.commitCurrentValues) {
@@ -93,6 +93,7 @@ export class LocalMindSettings {
     const tabs = [
       { id: 'general', title: 'General', subtitle: 'Language and instructions', icon: 'gear' },
       { id: 'model', title: 'Model', subtitle: 'Model defaults and generation', icon: 'boxes' },
+      { id: 'image-gen', title: 'Image Generation', subtitle: 'Local diffusion engine & models', icon: 'image' },
       { id: 'appearance', title: 'Appearance', subtitle: 'Theme and accent color', icon: 'brightness-high' },
       {
         id: 'memories',
@@ -139,6 +140,8 @@ export class LocalMindSettings {
             <localmind-settings-memories></localmind-settings-memories>
           ) : this.activeTab === 'tts' ? (
             <localmind-settings-tts></localmind-settings-tts>
+          ) : this.activeTab === 'image-gen' ? (
+            <localmind-settings-image-gen></localmind-settings-image-gen>
           ) : (
             <div class="empty-state">
               <p>Settings for {this.activeTab} will be rendered here.</p>

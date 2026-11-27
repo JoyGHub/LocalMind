@@ -13,10 +13,16 @@ else:
   from code_execution import normalize_code_execution_request, stream_code_execution
   from geo_tools import DEFAULT_SEARCH_RADIUS_METERS, search_nearby_places, search_place_by_query, stream_tool_result
 
+if __package__:
+  from .image_gen.routes import register_image_gen_routes
+else:
+  from image_gen.routes import register_image_gen_routes
+
 # TODO: Decide between Fask and FastAPI, or maybe another one.
 
 app = Flask(__name__)
 CORS(app)
+register_image_gen_routes(app)
 
 @app.route("/api/tools/execute_code", methods=["POST"])
 def execute_code_route():

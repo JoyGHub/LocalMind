@@ -16,6 +16,7 @@ import { convertTimestampTool } from './convert-timestamp.tool';
 import { searchNearbyPlacesTool, searchPlaceByQueryTool } from './search-places.tool';
 import { executeCodeTool } from './execute-code.tool';
 import { settingsState } from '../settings.service';
+import { generateImageTool } from './generate-image.tool';
 
 export const AVAILABLE_TOOLS: ToolDefinition[] = [
   getUserLatitudeAndLongitude,
@@ -35,6 +36,7 @@ export const AVAILABLE_TOOLS: ToolDefinition[] = [
   addMemoryTool,
   searchMemoriesTool,
   getAllMemoriesTool,
+  generateImageTool,
 ];
 
 export const toolRegistry = new Map<string, ToolDefinition>(AVAILABLE_TOOLS.map(tool => [tool.name, tool]));
@@ -52,5 +54,6 @@ export const getOllamaToolsSchema = () =>
   AVAILABLE_TOOLS.filter(tool => {
     if (tool.name === 'add_memory') return settingsState.saveMemories;
     if (tool.name === 'search_memories' || tool.name === 'get_all_memories') return settingsState.readMemories;
+    if (tool.name === 'generate_image') return settingsState.imageGenEnabled;
     return true;
   }).map(toOllamaToolSchema);

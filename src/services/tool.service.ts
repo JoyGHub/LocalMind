@@ -5,7 +5,7 @@ import state, { storeService } from '../store/store';
 import { llmAttachmentService } from './llm-attachment.service';
 
 export class ToolService {
-  async executeToolCalls(toolCalls: ToolCall[], conversationId: string, workflowId?: string, signal?: AbortSignal): Promise<any> {
+  async executeToolCalls(toolCalls: ToolCall[], conversationId: string, workflowId?: string, signal?: AbortSignal, ollamaModelName?: string): Promise<any> {
     let detectedAttachment: any = null;
 
     for (const call of toolCalls) {
@@ -38,6 +38,7 @@ export class ToolService {
         const toolResult = await targetTool.execute(call.function.arguments, {
           messageId: callingMessage?.id,
           signal,
+          ollamaModelName,
           onProgress: publishProgress,
         });
         if (signal?.aborted) return detectedAttachment;

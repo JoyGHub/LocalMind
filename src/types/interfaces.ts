@@ -14,9 +14,14 @@ export interface Message {
   thinking?: string;
   attachment?: {
     name: string;
-    size: string;
+    size?: string;
     url: string;
     type: string;
+    prompt?: string;
+    modelName?: string;
+    width?: number;
+    height?: number;
+    seed?: number;
   };
   images?: string[];
   attachedFiles?: {
@@ -168,4 +173,94 @@ export interface LocalMindSettings {
   saveMemories: boolean;
   readMemories: boolean;
   thinkingLevel: ThinkingLevel;
+  imageGenEnabled: boolean;
+  defaultImageModel: string;
+  unloadLlmBeforeImageGen: boolean;
+  imageGenBackend: ImageGenBackendType;
+}
+
+export type ImageGenBackendType = 'auto' | 'cuda' | 'vulkan' | 'metal' | 'cpu';
+
+export interface ImageGenInstallProgress {
+  status: 'idle' | 'installing' | 'error';
+  stage: 'fetching_release' | 'downloading' | 'extracting' | 'completed' | 'error' | 'idle';
+  percent: number;
+  message: string;
+  downloadedBytes?: number;
+  totalBytes?: number;
+  error?: string | null;
+}
+
+export interface ImageGenModelDownloadProgress {
+  modelId: string;
+  stage: 'downloading' | 'completed' | 'error';
+  fileIndex: number;
+  totalFiles: number;
+  fileName: string;
+  percent: number;
+  downloadedBytes: number;
+  totalBytes: number;
+  message: string;
+  error?: string;
+}
+
+export interface ImageGenEngineStatus {
+  backendOnline: boolean;
+  installed: boolean;
+  version: string | null;
+  backend: string | null;
+  detectedBackend: ImageGenBackendType;
+  availableBackends: ImageGenBackendType[];
+  platform: string;
+  installPath: string;
+  repoUrl: string;
+  installState: ImageGenInstallProgress;
+}
+
+export interface ImageGenModel {
+  id: string;
+  name: string;
+  family: string;
+  description: string;
+  minVramGb: number;
+  sizeLabel: string;
+  estimatedSizeBytes: number;
+  tags: string[];
+  defaultSteps: number;
+  defaultCfg: number;
+  defaultResolution: string;
+  installed: boolean;
+  isCustom: boolean;
+}
+
+export interface ImageGenModelsResponse {
+  models: ImageGenModel[];
+  modelsDir: string;
+  installedCount: number;
+}
+
+export interface ImageGenRequest {
+  prompt: string;
+  negative_prompt?: string;
+  model_id?: string;
+  width?: number;
+  height?: number;
+  steps?: number;
+  cfg_scale?: number;
+  seed?: number;
+  unload_ollama?: boolean;
+  ollama_model?: string;
+}
+
+export interface ImageGenResult {
+  imageId: string;
+  fileName: string;
+  imageUrl: string;
+  prompt: string;
+  modelId: string;
+  modelName: string;
+  width: number;
+  height: number;
+  steps: number;
+  seed: number;
 }

@@ -1,0 +1,410 @@
+:host {
+  display: block;
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: fade-in 0.2s ease-out;
+}
+
+.settings-header {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.engine-section-title {
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.setting-card,
+.engine-card,
+.model-card,
+.models-placeholder {
+  background: #ffffff;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+}
+
+.setting-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px 24px;
+}
+
+.toggle-card {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.setting-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.setting-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.setting-description {
+  font-size: 12px;
+  color: #666666;
+}
+
+.engine-card {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.engine-header,
+.engine-heading,
+.engine-details,
+.engine-controls,
+.models-toolbar,
+.models-title-row,
+.models-controls,
+.model-name-row,
+.model-badges,
+.model-actions {
+  display: flex;
+  align-items: center;
+}
+
+.engine-header {
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.engine-heading {
+  gap: 12px;
+}
+
+.engine-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #f5f3ff;
+  color: #6d28d9;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+}
+
+.engine-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.repo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 3px;
+  color: #6d28d9;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.repo-link sl-icon {
+  font-size: 11px;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 999px;
+  padding: 5px 9px;
+  font-size: 12px;
+  border: 1px solid #e5e7eb;
+  color: #666666;
+  background: #fafafa;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #9ca3af;
+}
+
+.status-pill.installed {
+  color: #166534;
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.status-pill.installed .status-dot {
+  background: #22c55e;
+}
+
+.status-pill.installing {
+  color: #6d28d9;
+  background: #f5f3ff;
+  border-color: #ddd6fe;
+}
+
+.status-pill.installing .status-dot {
+  background: #7c3aed;
+  animation: pulse 1.2s infinite;
+}
+
+.status-pill.error {
+  color: #991b1b;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.status-pill.error .status-dot {
+  background: #ef4444;
+}
+
+.engine-details {
+  gap: 8px;
+  flex-wrap: wrap;
+  color: #666666;
+  font-size: 12px;
+}
+
+.fragment-wrapper {
+  display: contents;
+}
+
+.acceleration-badge,
+.meta-tag {
+  border-radius: 999px;
+  padding: 4px 8px;
+  border: 1px solid #ede9fe;
+  background: #f5f3ff;
+  color: #6d28d9;
+  font-weight: 500;
+}
+
+.meta-tag {
+  background: #fafafa;
+  border-color: #e5e7eb;
+  color: #4b5563;
+}
+
+.install-path {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: #6b7280;
+}
+
+.engine-summary {
+  color: #6b7280;
+}
+
+.engine-controls {
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.backend-control {
+  margin-right: auto;
+  display: grid;
+  gap: 5px;
+  min-width: 190px;
+}
+
+.backend-control label {
+  color: #666666;
+  font-size: 12px;
+}
+
+.install-progress {
+  display: grid;
+  gap: 7px;
+}
+
+.progress-message {
+  color: #666666;
+  font-size: 12px;
+}
+
+.models-placeholder {
+  padding: 18px 20px;
+  color: #6b7280;
+  font-size: 13px;
+  background: #fafafa;
+}
+
+.models-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.models-toolbar {
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.models-title-row,
+.models-controls,
+.model-badges,
+.model-actions {
+  gap: 8px;
+}
+
+.models-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.count-pill {
+  border-radius: 999px;
+  background: #f5f3ff;
+  color: #6d28d9;
+  border: 1px solid #ede9fe;
+  padding: 4px 8px;
+  font-size: 11px;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.models-controls sl-input {
+  width: 220px;
+}
+
+.models-controls sl-icon-button {
+  color: #6d28d9;
+}
+
+.models-list {
+  display: grid;
+  gap: 10px;
+}
+
+.model-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  padding: 16px 18px;
+}
+
+.model-card.default-model {
+  border-color: #8b5cf6;
+  box-shadow: inset 3px 0 0 #7c3aed;
+}
+
+.model-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.model-name-row {
+  gap: 8px;
+}
+
+.model-name {
+  color: #1a1a1a;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.model-badges {
+  flex-wrap: wrap;
+}
+
+.model-description {
+  color: #666666;
+  font-size: 12px;
+}
+
+.model-recipe {
+  color: #6b7280;
+  font-size: 11px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.model-download-progress {
+  display: grid;
+  gap: 5px;
+  max-width: 420px;
+}
+
+.model-progress-message {
+  color: #6d28d9;
+  font-size: 11px;
+}
+
+.model-actions {
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  align-content: center;
+  max-width: 220px;
+}
+
+.models-empty {
+  border: 1px dashed #d1d5db;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.skeleton-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 92px;
+}
+
+.skeleton-card sl-skeleton {
+  width: 100%;
+  height: 16px;
+}
+
+@keyframes pulse {
+  50% { opacity: 0.35; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 760px) {
+  .model-card {
+    grid-template-columns: 1fr;
+  }
+
+  .model-actions {
+    max-width: none;
+    justify-content: flex-start;
+  }
+
+  .models-controls sl-input {
+    width: 180px;
+  }
+}

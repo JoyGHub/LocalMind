@@ -28,3 +28,6 @@ UserInterfaceState.xcuserstate
 .env
 __pycache__/
 *.py[cod]
+modules/
+models/image/
+data/

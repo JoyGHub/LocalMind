@@ -154,6 +154,8 @@ export namespace Components {
     interface LocalmindSettingsGeneral {
         "commitCurrentValues": () => Promise<Partial<LocalMindSettings>>;
     }
+    interface LocalmindSettingsImageGen {
+    }
     interface LocalmindSettingsMemories {
     }
     interface LocalmindSettingsModel {
@@ -283,11 +285,12 @@ declare global {
         new (): HTMLLocalmindCodeDownloadElement;
     };
     interface HTMLLocalmindComposerElementEventMap {
-        "promptEvent": { text: string; files: File[] };
+        "promptEvent": { text: string; files: File[]; imageMode: boolean };
         "cancelGenerationEvent": void;
         "modelSelectedEvent": OllamaModel;
         "thinkLevelEvent": ThinkingLevel;
         "webSearchToggleEvent": boolean;
+        "imageToggleEvent": boolean;
     }
     interface HTMLLocalmindComposerElement extends Components.LocalmindComposer, HTMLStencilElement {
         addEventListener<K extends keyof HTMLLocalmindComposerElementEventMap>(type: K, listener: (this: HTMLLocalmindComposerElement, ev: LocalmindComposerCustomEvent<HTMLLocalmindComposerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -589,6 +592,12 @@ declare global {
         prototype: HTMLLocalmindSettingsGeneralElement;
         new (): HTMLLocalmindSettingsGeneralElement;
     };
+    interface HTMLLocalmindSettingsImageGenElement extends Components.LocalmindSettingsImageGen, HTMLStencilElement {
+    }
+    var HTMLLocalmindSettingsImageGenElement: {
+        prototype: HTMLLocalmindSettingsImageGenElement;
+        new (): HTMLLocalmindSettingsImageGenElement;
+    };
     interface HTMLLocalmindSettingsMemoriesElement extends Components.LocalmindSettingsMemories, HTMLStencilElement {
     }
     var HTMLLocalmindSettingsMemoriesElement: {
@@ -676,6 +685,7 @@ declare global {
         "localmind-settings": HTMLLocalmindSettingsElement;
         "localmind-settings-appearance": HTMLLocalmindSettingsAppearanceElement;
         "localmind-settings-general": HTMLLocalmindSettingsGeneralElement;
+        "localmind-settings-image-gen": HTMLLocalmindSettingsImageGenElement;
         "localmind-settings-memories": HTMLLocalmindSettingsMemoriesElement;
         "localmind-settings-model": HTMLLocalmindSettingsModelElement;
         "localmind-settings-tts": HTMLLocalmindSettingsTtsElement;
@@ -708,8 +718,9 @@ declare namespace LocalJSX {
         "models": OllamaModel[];
         "ollamaRunning"?: boolean;
         "onCancelGenerationEvent"?: (event: LocalmindComposerCustomEvent<void>) => void;
+        "onImageToggleEvent"?: (event: LocalmindComposerCustomEvent<boolean>) => void;
         "onModelSelectedEvent"?: (event: LocalmindComposerCustomEvent<OllamaModel>) => void;
-        "onPromptEvent"?: (event: LocalmindComposerCustomEvent<{ text: string; files: File[] }>) => void;
+        "onPromptEvent"?: (event: LocalmindComposerCustomEvent<{ text: string; files: File[]; imageMode: boolean }>) => void;
         "onThinkLevelEvent"?: (event: LocalmindComposerCustomEvent<ThinkingLevel>) => void;
         "onWebSearchToggleEvent"?: (event: LocalmindComposerCustomEvent<boolean>) => void;
         "requestIsPending": boolean;
@@ -834,6 +845,8 @@ declare namespace LocalJSX {
     }
     interface LocalmindSettingsGeneral {
     }
+    interface LocalmindSettingsImageGen {
+    }
     interface LocalmindSettingsMemories {
     }
     interface LocalmindSettingsModel {
@@ -892,6 +905,7 @@ declare namespace LocalJSX {
         "localmind-settings": LocalmindSettings;
         "localmind-settings-appearance": LocalmindSettingsAppearance;
         "localmind-settings-general": LocalmindSettingsGeneral;
+        "localmind-settings-image-gen": LocalmindSettingsImageGen;
         "localmind-settings-memories": LocalmindSettingsMemories;
         "localmind-settings-model": LocalmindSettingsModel;
         "localmind-settings-tts": LocalmindSettingsTts;
@@ -935,6 +949,7 @@ declare module "@stencil/core" {
             "localmind-settings": LocalJSX.LocalmindSettings & JSXBase.HTMLAttributes<HTMLLocalmindSettingsElement>;
             "localmind-settings-appearance": LocalJSX.LocalmindSettingsAppearance & JSXBase.HTMLAttributes<HTMLLocalmindSettingsAppearanceElement>;
             "localmind-settings-general": LocalJSX.LocalmindSettingsGeneral & JSXBase.HTMLAttributes<HTMLLocalmindSettingsGeneralElement>;
+            "localmind-settings-image-gen": LocalJSX.LocalmindSettingsImageGen & JSXBase.HTMLAttributes<HTMLLocalmindSettingsImageGenElement>;
             "localmind-settings-memories": LocalJSX.LocalmindSettingsMemories & JSXBase.HTMLAttributes<HTMLLocalmindSettingsMemoriesElement>;
             "localmind-settings-model": LocalJSX.LocalmindSettingsModel & JSXBase.HTMLAttributes<HTMLLocalmindSettingsModelElement>;
             "localmind-settings-tts": LocalJSX.LocalmindSettingsTts & JSXBase.HTMLAttributes<HTMLLocalmindSettingsTtsElement>;
